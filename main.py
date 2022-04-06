@@ -1,13 +1,21 @@
+import asyncio
+import os
 import discord
+
 from dotenv import load_dotenv
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print("Logged on as {0}!".format(self.user))
+from app import PhoneWave
 
-    async def on_message(self, message):
-        print("Message from {0.author}: {0.content}".format(message))
+load_dotenv(".env")
+load_dotenv(".env.development")
 
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    client = PhoneWave(loop=loop, command_prefix="p!")
 
-client = MyClient()
-client.run("ayaya")
+    try:
+        loop.run_until_complete(client.run(os.getenv("TOKEN")))
+    except RuntimeError:
+        exit(0)
+
+client = discord.Client()
