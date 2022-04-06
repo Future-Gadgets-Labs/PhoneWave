@@ -1,5 +1,5 @@
 import discord
-
+from dotenv import load_dotenv
 
 class MyClient(discord.Client):
     async def on_ready(self):

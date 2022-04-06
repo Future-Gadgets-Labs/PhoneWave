@@ -5,4 +5,7 @@ WIP
 WIP
 
 ## For Developers
-WIP
+Requirements:
+- Python 3.9+
+
+
