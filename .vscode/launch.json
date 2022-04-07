@@ -5,7 +5,7 @@
             "name": "El psy Kongroo",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceRoot}/${file}",
+            "program": "${workspaceRoot}/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
         }

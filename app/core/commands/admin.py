@@ -7,8 +7,7 @@ import aiohttp
 import pathlib
 import os
 
-
-class Hentai(commands.Cog):
+class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -35,4 +34,4 @@ class Hentai(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Hentai(bot))
+    bot.add_cog(Admin(bot))

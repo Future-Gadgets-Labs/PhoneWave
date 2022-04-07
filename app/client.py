@@ -1,7 +1,15 @@
 import discord
-import discord.ext.commands as commands
+from discord.ext import commands
 
-from app.core import handlers
+from app.utilities import handlers
+
+
+async def on_ready():
+    print("ready")
+
+
+async def uwu(ctx):
+    print("working")
 
 
 class PhoneWave(commands.Bot):
@@ -11,5 +19,11 @@ class PhoneWave(commands.Bot):
         # autoload the commands & the events
         handlers.load_commands(self)
 
-    async def on_ready(self):
-        print(f"Logged in as: {self.user.name} - {self.user.id}")
+        self.event(on_ready)
+        
+        result = commands.command()(uwu)
+        self.add_command(result)
+        
+
+    # async def on_ready(self):
+    #     print(f"Logged in as: {self.user.name} - {self.user.id}")
