@@ -1,10 +1,11 @@
 import asyncio
 import os
-import discord
 
 from dotenv import load_dotenv
 
 from app import PhoneWave
+from app.utilities import logger
+
 
 load_dotenv(".env")
 load_dotenv(".env.development")
@@ -17,5 +18,3 @@ if __name__ == "__main__":
         loop.run_until_complete(client.run(os.getenv("TOKEN")))
     except RuntimeError:
         exit(0)
-
-client = discord.Client()
