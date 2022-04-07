@@ -11,7 +11,7 @@ load_dotenv(".env.development")
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
-    client = PhoneWave(loop=loop, command_prefix="p!")
+    client = PhoneWave(loop=loop, command_prefix=os.getenv("PREFIX"))
 
     try:
         loop.run_until_complete(client.run(os.getenv("TOKEN")))
