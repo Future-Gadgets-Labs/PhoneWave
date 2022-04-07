@@ -16,6 +16,10 @@ class ClientEvents(commands.Cog):
     async def on_ready(self):
         print(f"{self.bot.user} has connected to Discord!")
 
+    @commands.Cog.listener()
+    async def on_error(self, event, *args, **kwargs):
+        print(f"{event} has occured!")
+
 
 def setup(bot):
     bot.add_cog(ClientEvents(bot))
