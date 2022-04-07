@@ -1,7 +1,34 @@
-version: '3.1'
+version: '3.7'
+
 services:
+    bot:
+        image: phonewave
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        env_file:
+          - ./.env.development
+        networks:
+            - phonewave
+        depends_on:
+            - database
+
     database:
         image: mongo
-        restart: always
+        restart: unless-stopped
         ports:
-            - 27017:27017
+            - "27017:27017"
+        networks:
+            - phonewave
+        volumes:
+            - database:/data/db
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=changeme
+            - MONGO_INITDB_ROOT_PASSWORD=changeme
+
+networks:
+    phonewave:
+        driver: bridge
+volumes:
+    database:
