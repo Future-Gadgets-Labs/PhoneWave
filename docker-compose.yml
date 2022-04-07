@@ -1,7 +1,28 @@
-version: '3.1'
+version: '3.7'
+
 services:
     database:
         image: mongo
-        restart: always
+        container_name: "mongodb"
+        restart: unless-stopped
+        command: /scripts/setup.sh
+        hostname: mongo
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=ayaya_lord
+            - MONGO_INITDB_ROOT_PASSWORD=h4ck3r
+        volumes:
+            - database:/data/db
         ports:
             - 27017:27017
+    bot:
+        build: .
+        image: phonewave
+        restart: unless-stopped
+        # This make me questions if we need .env 
+        environment:
+            - MONGO_HOST=mongo
+            - MONGO_USERNAME=ayaya_lord
+            - MONGO_PASSWORD=h4ck3r
+            - MONGO_PORT=27017
+        depends_on:
+            - database
