@@ -210,3 +210,4 @@ $RECYCLE.BIN/
 
 .env.*
 !.example
+!.env
