@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from app import PhoneWave
 from app.utilities import logger
 
+logger.info("Starting up...")
 
 load_dotenv(".env")
 load_dotenv(".env.development")

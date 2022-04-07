@@ -1,11 +1,6 @@
-from PIL import Image, ImageDraw, ImageFont
 from discord.ext import commands
-from io import BytesIO
-from PIL import Image, ImageDraw
-import discord
-import aiohttp
-import pathlib
-import os
+
+from app.utilities import logger
 
 
 class ClientEvents(commands.Cog):
@@ -14,11 +9,11 @@ class ClientEvents(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print(f"{self.bot.user} has connected to Discord!")
+        logger.info(f"Logged in as {self.bot.user}")
 
     @commands.Cog.listener()
     async def on_error(self, event, *args, **kwargs):
-        print(f"{event} has occured!")
+        logger.error(f"{event}")
 
 
 def setup(bot):

@@ -26,3 +26,6 @@ services:
             - MONGO_PORT=27017
         depends_on:
             - database
+
+volumes:
+    database:

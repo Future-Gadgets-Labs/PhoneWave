@@ -19,4 +19,4 @@ WORKDIR /PhoneWave
 # Should only copy what we need ( would be a security flaw to copy everything )
 COPY ./app ./main.py ./.env ./.env.development ./
 
-CMD ["main.py"]
+CMD ["python", "main.py"]

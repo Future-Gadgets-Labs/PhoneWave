@@ -1,6 +1,9 @@
 from importlib import resources
 import discord.ext.commands as commands
 
+from .logger import logger
+
+
 BLACKLIST = ["__init__.py", "base"]
 BASE_PACKAGE = "app.core"
 
@@ -16,6 +19,8 @@ def load_commands(client: commands.Bot):
     for command in commands:
         client.load_extension(f"{BASE_PACKAGE}.commands.{command}")
 
+    logger.debug(f"Loaded {len(commands)} commands")
+
 
 def load_events(client: commands.Bot):
     events = resources.contents(f"{BASE_PACKAGE}.events")
@@ -24,6 +29,8 @@ def load_events(client: commands.Bot):
     for event in events:
         client.load_extension(f"{BASE_PACKAGE}.events.{event}")
 
+    logger.debug(f"Loaded {len(events)} events")
+
 
 def load_modules(client: commands.Bot):
     modules = resources.contents(f"{BASE_PACKAGE}.modules")
@@ -31,3 +38,5 @@ def load_modules(client: commands.Bot):
 
     for module in modules:
         client.load_extension(f"{BASE_PACKAGE}.modules.{module}")
+
+    logger.debug(f"Loaded {len(modules)} modules")
