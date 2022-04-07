@@ -1,5 +1,5 @@
 # Multi Stage build ftw
-FROM python:3.9.9-slim-buster as deps
+FROM python:3.9.9 as deps
 
 WORKDIR /PhoneWave
 
@@ -10,7 +10,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-FROM python:3.9.9-slim-buster
+FROM python:3.9.9
 COPY --from=deps /opt/venv /opt/venv
 ENV PATH="opt/venv/bin:$PATH"
 
