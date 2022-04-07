@@ -10,7 +10,7 @@ filter = lambda x: [file[:-3] for file in x if file.endswith(".py") and file not
 
 
 def load_commands(client: commands.Bot):
-    commands = resources.contents("{BASE_PACKAGE}.commands")
+    commands = resources.contents(f"{BASE_PACKAGE}.commands")
     commands = filter(commands)
 
     for command in commands:
@@ -18,7 +18,7 @@ def load_commands(client: commands.Bot):
 
 
 def load_events(client: commands.Bot):
-    events = resources.contents("{BASE_PACKAGE}.events")
+    events = resources.contents(f"{BASE_PACKAGE}.events")
     events = filter(events)
 
     for event in events:
@@ -26,7 +26,7 @@ def load_events(client: commands.Bot):
 
 
 def load_modules(client: commands.Bot):
-    modules = resources.contents("{BASE_PACKAGE}.modules")
+    modules = resources.contents(f"{BASE_PACKAGE}.modules")
     modules = filter(modules)
 
     for module in modules:
