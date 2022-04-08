@@ -1,4 +1,6 @@
 *
+
+# Should only copy what we need ( would be a security flaw to copy everything )
 !app
 !main.py
 !requirements.txt

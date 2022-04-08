@@ -14,9 +14,6 @@ COPY --from=deps /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /home/phonewave
 
-
-# Should only copy what we need ( would be a security flaw to copy everything )
 COPY . .
 
-
-CMD ["main.py"]
+CMD ["python", "main.py"]
