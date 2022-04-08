@@ -1,8 +1,8 @@
+# Copy only what we need ( would be a security flaw to copy everything )
 *
-
-# Should only copy what we need ( would be a security flaw to copy everything )
-!app
+!app/
 !main.py
 !requirements.txt
-!scripts
+!scripts/
+!.env
 !.env.*

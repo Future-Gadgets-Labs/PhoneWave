@@ -1,10 +1,16 @@
-FROM python:3-slim-buster
+# Multi Stage build ftw
+FROM python:3-slim-bullseye as deps
+WORKDIR /home/phonewave
 
 WORKDIR /app
 
-# Install dependencies
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+FROM python:3-slim-bullseye
+COPY --from=deps /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+WORKDIR /home/phonewave
 
 # Copy app code
 COPY . .

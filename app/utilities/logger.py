@@ -31,7 +31,7 @@ def add_log_name(logger, method_name, event_dict):
     return event_dict
 
 
-class WaifuRenderer(structlog.dev.ConsoleRenderer):
+class PhoneWaveRenderer(structlog.dev.ConsoleRenderer):
     def __call__(self, logger: WrappedLogger, name: str, event_dict: EventDict) -> str:
         sio = StringIO()
 
@@ -97,7 +97,7 @@ class WaifuRenderer(structlog.dev.ConsoleRenderer):
         return sio.getvalue()
 
 
-logger_styles = WaifuRenderer.get_default_level_styles()
+logger_styles = PhoneWaveRenderer.get_default_level_styles()
 logger_styles["debug"] = MAGENTA
 logger_styles["info"] = CYAN
 
@@ -113,7 +113,7 @@ structlog.configure(
         structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
         structlog.processors.StackInfoRenderer(),
         structlog.processors.UnicodeDecoder(),
-        WaifuRenderer(pad_event=50, level_styles=logger_styles),
+        PhoneWaveRenderer(pad_event=50, level_styles=logger_styles),
     ],
 )
 

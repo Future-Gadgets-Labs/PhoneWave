@@ -1,32 +1,31 @@
 version: '3.7'
 
 services:
-    database:
+    mongo:
         image: mongo
-        container_name: "mongodb"
         restart: unless-stopped
         hostname: mongo
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=ayaya_lord
-            - MONGO_INITDB_ROOT_PASSWORD=h4ck3r
+            - MONGO_INITDB_DATABASE=phonewave
+            - MONGO_INITDB_ROOT_USERNAME=phonewave
+            - MONGO_INITDB_ROOT_PASSWORD=changeme
         volumes:
-            - database:/data/db
+            - mongo:/data/db
         ports:
-            - 27017:27017
+            - "27017:27017" # https://www.mongodb.com/docs/manual/reference/default-mongodb-port/
     bot:
         build: .
         image: phonewave
-        container_name: phonewave
-        hostname: phonewave
+        hostname: bot
         restart: unless-stopped
         # This make me questions if we need .env 
         environment:
             - MONGO_HOST=mongo
-            - MONGO_USERNAME=ayaya_lord
-            - MONGO_PASSWORD=h4ck3r
+            - MONGO_USERNAME=phonewave
+            - MONGO_PASSWORD=changeme
             - MONGO_PORT=27017
         depends_on:
-            - database
+            - mongo
 
 volumes:
-    database:
+    mongo:
