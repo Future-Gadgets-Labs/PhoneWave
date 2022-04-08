@@ -8,6 +8,8 @@ import aiohttp
 import pathlib
 import os
 
+from app.utilities import logger
+
 
 class Admin(commands.Cog):
     def __init__(self, bot):
@@ -15,6 +17,8 @@ class Admin(commands.Cog):
 
     @commands.command()
     async def testing(self, ctx):
+        logger.info("Received 'testing' command...")
+        
         radius = 25
         width, height = (350, 350)
 

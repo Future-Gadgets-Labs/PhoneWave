@@ -1,5 +1,5 @@
 # Multi Stage build ftw
-FROM python:3.9.9 as deps
+FROM python:3-slim-bullseye as deps
 WORKDIR /home/phonewave
 
 ENV VIRTUAL_ENV=/opt/venv
@@ -9,7 +9,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-FROM python:3.9.9
+FROM python:3-slim-bullseye
 COPY --from=deps /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 WORKDIR /home/phonewave
