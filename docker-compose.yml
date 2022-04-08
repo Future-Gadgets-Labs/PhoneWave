@@ -14,7 +14,7 @@ services:
         ports:
             - 27017:27017
     bot:
-        build: ./
+        build: .
         image: phonewave
         container_name: phonewave
         hostname: phonewave
