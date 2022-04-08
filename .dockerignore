@@ -1,3 +1,6 @@
-/.venv
-/.github
-/.vscode
+*
+!app
+!main.py
+!requirements.txt
+!scripts
+!.env.*

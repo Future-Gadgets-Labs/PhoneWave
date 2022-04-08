@@ -1,7 +1,7 @@
 version: '3'
 services:
-    core:
+    bot:
         volumes:
-            - .:/workspace
+            # - .:/home/phonewave
             - ../.vscode/ext/:/root/.vscode-server/extensions
         command: /bin/sh -c "while sleep 1000; do :; done"

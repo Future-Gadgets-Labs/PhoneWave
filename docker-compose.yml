@@ -5,7 +5,6 @@ services:
         image: mongo
         container_name: "mongodb"
         restart: unless-stopped
-        command: /scripts/setup.sh
         hostname: mongo
         environment:
             - MONGO_INITDB_ROOT_USERNAME=ayaya_lord
@@ -15,8 +14,10 @@ services:
         ports:
             - 27017:27017
     bot:
-        build: .
+        build: ./
         image: phonewave
+        container_name: phonewave
+        hostname: phonewave
         restart: unless-stopped
         # This make me questions if we need .env 
         environment:

@@ -1,7 +1,6 @@
 # Multi Stage build ftw
 FROM python:3.9.9 as deps
-
-WORKDIR /PhoneWave
+WORKDIR /home/phonewave
 
 ENV VIRTUAL_ENV=/opt/venv
 RUN python3 -m venv $VIRTUAL_ENV
@@ -12,11 +11,12 @@ RUN pip install -r requirements.txt
 
 FROM python:3.9.9
 COPY --from=deps /opt/venv /opt/venv
-ENV PATH="opt/venv/bin:$PATH"
+ENV PATH="/opt/venv/bin:$PATH"
+WORKDIR /home/phonewave
 
-WORKDIR /PhoneWave
 
 # Should only copy what we need ( would be a security flaw to copy everything )
-COPY ./app ./main.py ./.env ./.env.development ./
+COPY . .
 
-CMD ["python", "main.py"]
+
+CMD ["main.py"]
