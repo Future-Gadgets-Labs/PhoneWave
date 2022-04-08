@@ -1,19 +1,13 @@
-# Multi Stage build ftw
-FROM python:3.9.9 as deps
-WORKDIR /home/phonewave
+FROM python:3-slim-buster
 
-ENV VIRTUAL_ENV=/opt/venv
-RUN python3 -m venv $VIRTUAL_ENV
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+WORKDIR /app
 
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
+# Install dependencies
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
 
-FROM python:3.9.9
-COPY --from=deps /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-WORKDIR /home/phonewave
-
+# Copy app code
 COPY . .
 
-CMD ["python", "main.py"]
+# Start bot
+CMD ["python3", "main.py"]
