@@ -8,8 +8,8 @@ class PhoneWave(commands.Bot):
         super().__init__(*args, **kwargs)
 
         # autoload the commands, events & the modules
-        handlers.load_commands(self)
-        handlers.load_events(self)
-        handlers.load_modules(self)
+        handlers.load_package(self, "commands")
+        handlers.load_package(self, "events")
+        handlers.load_package(self, "modules")
 
         # Check for database connection
