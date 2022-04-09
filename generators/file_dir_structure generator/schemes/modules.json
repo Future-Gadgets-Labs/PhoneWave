@@ -1,0 +1,37 @@
+{
+  "file_contents":[
+    {
+      "scheme_path": "modules/whatever/whatever.py",
+      "save_location": "schemes/file_contents/whatever.py"
+    }
+  ],
+  "name": "modules",
+  "type": "directory",
+  "children": [
+    {
+      "name": "shamangirls",
+      "type": "directory",
+      "children": [
+        {
+          "name": "sex",
+          "type": "file"
+        }
+      ]
+    },
+    {
+      "name": "whatever",
+      "type": "directory",
+      "children": [
+        {
+          "name": "helpers",
+          "type": "directory",
+          "children": []
+        },
+        {
+          "name": "whatever.py",
+          "type": "file"
+        }
+      ]
+    }
+  ]
+}
