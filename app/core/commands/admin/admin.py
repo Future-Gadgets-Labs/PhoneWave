@@ -10,10 +10,9 @@ class BotCommand(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def testing(self, ctx: ContextType):
+    async def ping(self, ctx: ContextType):
         logger.info("Received 'testing' command...")
-
-        return await ctx.send
+        return await ctx.send("UwU")
 
 
 def setup(bot):

@@ -17,7 +17,6 @@ Pillow==9.1.0
 platformdirs==2.5.1
 pluggy==1.0.0
 py==1.11.0
-py-cord @ file:///C:/Users/sshaa/AppData/Local/pypoetry/Cache/artifacts/4c/34/9c/4278093e3c9234be041a65c1ae73f936066430fbcae881518c691105d5/py_cord-1.7.3-py3-none-any.whl
 Pygments==2.11.2
 pymongo==4.1.0
 pyparsing==3.0.7
