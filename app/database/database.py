@@ -1,15 +1,22 @@
-from os import environ
 import mongoengine
 
+from app.exceptions import BadConfig
 from app.utilities import logger
+from app.config import config
 
-MONGO_URI = environ.get("MONGO_URI", None)
 
-if not MONGO_URI:
-    logger.error("MONGO_URI is not set. Exiting...")
-    exit(1)
+if not config.MONGO_URI:
+    raise BadConfig("MONGO_URI is not set.")
 
-mongoengine.connect(MONGO_URI)
+
+def init():
+    try:
+        mongoengine.connect("phonewave", host=config.MONGO_URI)
+        logger.info("MongoDB connected successfully.")
+    except Exception as e:
+        logger.critical(e)
+        exit(1)
+
 
 # def get_client(config):
 #     logger.info("Connecting to database '{}' with username '{}'".format(config.get("mongo_uri"), config.get("mongo_username")))
