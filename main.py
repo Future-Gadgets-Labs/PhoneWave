@@ -1,11 +1,11 @@
-from app import PhoneWave, config, cli
+from dotenv import dotenv_values
 
+from app import cli, PhoneWave, config
+from app.utilities import logger
+from app.exceptions import BadConfig
 
+config.overwrite(**dotenv_values())
 cli.cli_runner(config)
-
-
-# from app.utilities import logger
-# from app.exceptions import BadConfig
 
 print(config.BOT_TOKEN)
 
