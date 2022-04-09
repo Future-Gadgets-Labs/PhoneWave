@@ -34,7 +34,7 @@ platformdirs==2.5.1
 pluggy==1.0.0
 ply==3.11
 py==1.11.0
-py-cord==1.7.3
+py-cord==2.0.0b7
 Pygments==2.11.2
 pymongo==4.1.0
 pyparsing==3.0.7
@@ -47,6 +47,6 @@ six==1.16.0
 structlog==21.5.0
 testcord==0.0.1
 tomli==2.0.1
-typing_extensions==4.1.1
+typing-extensions==4.1.1
 wrapt==1.14.0
 yarl==1.7.2

@@ -1,14 +1,23 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, bridge
+from discord.ext.bridge import BridgeContext
 
 from app import client
 from app.database.models import Guild, Role as RoleDB
 from app.utilities import logger
 
 
+# TODO: open ticket in py-cord to make BridgeExtContext ignore 'ephemeral'
+async def defer(ctx: BridgeContext):
+    if isinstance(ctx, discord.ext.bridge.BridgeExtContext):
+        await ctx.defer()
+    elif isinstance(ctx, discord.ext.bridge.BridgeApplicationContext):
+        await ctx.defer(ephemeral=True)
+
+
 # TODO: make it so that only admins&mods can use this command
 class Role(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: client.PhoneWave):
         self.bot = bot
         self.roles = {}
 
@@ -18,10 +27,10 @@ class Role(commands.Cog):
 
             for db_role in db_guild.roles:
                 role = discord.utils.get(guild.roles, id=db_role.role_id)
-    
+
                 key = (db_guild.guild_id, db_role.channel_id, db_role.message_id, db_role.emoji_id)
                 self.roles[key] = role
-    
+
                 logger.debug(f"[role] Loaded role '{role}'")
 
         logger.info(f"[role] Loaded {len(self.roles)} roles")
@@ -108,6 +117,7 @@ class Role(commands.Cog):
             for db_role in list(db_guild.roles):
                 if db_role.role_id == role.id:
                     db_guild.roles.remove(db_role)
+                    deleted_role = True
 
             if deleted_role:
                 db_guild.save()
@@ -123,19 +133,20 @@ class Role(commands.Cog):
         key = (guild_id, channel_id, message_id, emoji_id)
         return self.roles.get(key)
 
-    @commands.group()
-    async def role(self, ctx: commands.Context):
-        pass
-
-    @role.command()
+    # TODO: find way to have group/spaces on normal and app/slash commands
+    @bridge.bridge_command(name="role_assign")
+    @discord.option(name="role", description="The self-service role")
+    @discord.option(name="emoji", description="The emoji used to add the role")
+    @discord.option(name="message", description="The message to listen for the emoji")
     async def assign(
         self,
-        ctx: commands.Context,
-        role: discord.Role = None,
-        emoji: discord.Emoji = None,
-        message: discord.Message = None
+        ctx: BridgeContext,
+        role: discord.Role,
+        emoji: discord.Emoji,
+        message: discord.Message
     ):
         """Assigns a given role when the user reacts the message."""
+        await defer(ctx)
 
         if message is None and ctx.message.reference is not None:
             message = ctx.message.reference.resolved
@@ -150,53 +161,79 @@ class Role(commands.Cog):
             await ctx.reply(f"You're missing a message. Reply to the message or paste a link to it.")
             return
 
+        if not role.is_assignable():
+            await ctx.reply(f"This role cannot be assigned by the bot.")
+            return
+
         await self.assign_role(ctx.guild, role, emoji, message)
 
-        await message.reply(f"{ctx.author.mention}, assigning {role.mention} to all users that react with {emoji}"
-                            f" to that message.", delete_after=60)
-        await ctx.message.delete(delay=60)
+        await ctx.respond(f"Assigning {role.mention} to all users that react with {emoji}.")
+        await message.reply(f"Assigned role {role} with emoji {emoji} to this message", delete_after=30)
 
-    @role.command()
-    async def unassign(self, ctx: commands.Context, role: discord.Role = None):
+    @bridge.bridge_command(name="role_unassign")
+    @discord.option(name="role", description="The self-service role")
+    async def unassign(self, ctx: BridgeContext, role: discord.Role):
         """Removes role assignment."""
+        await defer(ctx)
 
         if role is None:
             await ctx.reply(f"You're missing a role.")
             return
-        
-        # ctx.defer() # TODO: review
 
         # Remove bot reaction from message
         for key, r in list(self.roles.items()):
             guild_id = key[0]
-            message_id = key[1]
-            emoji_id = key[2]
+            channel_id = key[1]
+            message_id = key[2]
+            emoji_id = key[3]
 
             if guild_id != ctx.guild.id or r.id != role.id:
                 continue
 
-            message = ctx.guild.get_message(message_id)
-            emoji = ctx.guild.get_emoji(emoji_id)
-            await message.remove_reaction(emoji)
+            channel = ctx.guild.get_channel(channel_id)
+            message = await channel.fetch_message(message_id)
+            emoji = ctx.bot.get_emoji(emoji_id)
+            await message.remove_reaction(emoji, self.bot.user)
 
         # Remove role assignment from database
         await self.unassign_role(ctx.guild, role)
 
-        await ctx.reply(f"All assignments to the role {role.mention} have been removed.")
+        await ctx.respond(f"All assignments to role {role.mention} have been removed.")
 
-    @role.command()
-    async def list(self, ctx: commands.Context):
+    @bridge.bridge_command(name="role_list")
+    async def list(self, ctx: BridgeContext):
         """Lists current role assignments on this guild."""
-        await ctx.reply("ROLE LIST")  # TODO
+        await defer(ctx)
 
-    @role.command()
-    async def resync(
-        self,
-        ctx: commands.Context
-    ):
+        embed = discord.Embed()
+
+        is_first = True
+        for key, role in self.roles.items():
+            guild_id = key[0]
+            emoji_id = key[3]
+
+            if guild_id != ctx.guild.id:
+                continue
+
+            emoji = ctx.bot.get_emoji(emoji_id)
+
+            embed.add_field(name="Role" if is_first else "\u200b", value=role.mention, inline=True)
+            embed.add_field(name="Emoji" if is_first else "\u200b",
+                            value=f"<:{emoji.name}:{emoji.id}> `:{emoji.name}:`", inline=True)
+            embed.add_field(name="\u200b", value=f"\u200b")  # spacer
+
+            is_first = False
+
+        await ctx.respond(embed=embed)
+
+    @bridge.bridge_command(name="role_resync")
+    async def resync(self, ctx: BridgeContext):
         """Forces a resync on all roles in this server"""
+        await defer(ctx)
+
         await self.force_resync(resync_guild_id=ctx.guild.id)
-        await ctx.reply("All roles on managed on this guild have been resync'd.")
+
+        await ctx.respond("All roles managed on this guild have been resync'd!")
 
     @commands.Cog.listener()
     async def on_ready(self):

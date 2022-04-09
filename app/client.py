@@ -1,23 +1,25 @@
 import discord
-from discord.ext import commands
-
+from discord.ext import bridge
 from discord.message import Message
 
-from app.exceptions.bad_config import BadConfig
+from app.config import config
 from app.database import database
 from app.database.models import Guild
-
+from app.exceptions.bad_config import BadConfig
 from app.utilities import handlers, logger
-from app.config import config
 
 prefix_cache = {}
 
 
-class PhoneWave(commands.Bot):
+class PhoneWave(bridge.Bot):
     def __init__(self, *args, **kwargs):
-        intents = discord.Intents.default()
-        intents.members = True  # required to fetch list of members in a guild
-        intents.reactions = True  # required for 'on_raw_reaction_add' and 'on_raw_reaction_remove' events
+        intents = discord.Intents(
+            message_content=True,
+            guilds=True,
+            guild_messages=True,
+            guild_reactions=True,  # required to receive 'on_raw_reaction_add/remove' events
+            members=True,          # required to see list of members in a guild
+        )
 
         super().__init__(*args, intents=intents, command_prefix=self.command_prefix, **kwargs)
 

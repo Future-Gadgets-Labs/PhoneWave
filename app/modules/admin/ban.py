@@ -1,8 +1,7 @@
 from discord.ext import commands
+from discord.ext.commands import Context
 
 from app.utilities import logger
-
-ContextType = commands.Context
 
 
 class Ban(commands.Cog):
@@ -10,7 +9,7 @@ class Ban(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def ban(self, ctx: ContextType):
+    async def ban(self, ctx: Context):
         logger.info("Received 'testing' command...")
         return await ctx.send("UwU")
 
