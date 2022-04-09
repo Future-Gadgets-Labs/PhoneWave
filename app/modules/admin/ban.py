@@ -5,7 +5,7 @@ from app.utilities import logger
 ContextType = commands.Context
 
 
-class BotCommand(commands.Cog):
+class Ban(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -16,4 +16,4 @@ class BotCommand(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(BotCommand(bot))
+    bot.add_cog(Ban(bot))

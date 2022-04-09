@@ -6,7 +6,7 @@ from app.utilities import logger
 ContextType = commands.Context
 
 
-class BotCommand(commands.Cog):
+class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -50,4 +50,4 @@ class BotCommand(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(BotCommand(bot))
+    bot.add_cog(Ping(bot))
