@@ -1,10 +1,8 @@
 from discord.ext import commands
-import discord
-
-from io import BytesIO
-from PIL import Image, ImageDraw
 
 from app.utilities import logger
+
+ContextType = commands.Context
 
 
 class BotCommand(commands.Cog):
@@ -12,27 +10,10 @@ class BotCommand(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def testing(self, ctx):
+    async def testing(self, ctx: ContextType):
         logger.info("Received 'testing' command...")
 
-        radius = 25
-        width, height = (350, 350)
-
-        with BytesIO() as mem:
-            image = Image.new("RGBA", size=(width, height), color=(155, 0, 0))
-            corner = Image.new("RGBA", (radius, radius), (0, 0, 0, 0))
-            draw = ImageDraw.Draw(corner)
-            draw.pieslice((0, 0, radius * 2, radius * 2), 180, 270, fill=(155, 0, 0))
-            image.paste(corner, (0, 0))
-            image.paste(corner.rotate(90), (0, height - radius))
-            image.paste(corner.rotate(180), (width - radius, height - radius))
-            image.paste(corner.rotate(270), (width - radius, 0))
-
-            image.save(mem, "png")
-            mem.name = "test.png"
-            mem.seek(0)
-
-            return await ctx.send("1", file=discord.File(mem, mem.name))
+        return await ctx.send
 
 
 def setup(bot):
