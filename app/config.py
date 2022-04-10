@@ -11,28 +11,30 @@ class Config:
     BOT_PREFIX = "p!"
     BOT_DEVS_ID = "100173058764976128|179480292413800448"
 
-    # MongoDB stuff
+    # MongoDB
     MONGO_URI = None
     MONGO_DB = "phonewave"
 
     # Redis
     REDIS_HOST = "localhost"
     REDIS_PORT = 6379
-    REDIS_DB = 0
+    REDIS_PREFIX_DB = 0
 
-    def overwrite(self, **kwargs):
-        allowed_keys = [k for k in dir(self) if not k.startswith("_") and not callable(getattr(self, k))]
+    def __init__(self, *args, **kwargs):
+        # Overwrite the config with the environment file [.env]
+        # Overwrite the config with the sys' environment variables
+        # Overwrite the config with the CLI arguments
+        self.set_list(**dotenv_values())  # load .env file
+        self.set_list(**os.environ)       # load environment variables
+        cli_runner(self)                  # load CLI arguments
 
+    def set(self, key, value):
+        if hasattr(self, key):
+            setattr(self, key, value)
+
+    def set_list(self, **kwargs):
         for key, value in kwargs.items():
-            if key in allowed_keys:
-                setattr(Config, key, value)
+            self.set(key, value)
 
 
-# Initialize the config
-# Overwrite the config with the environment file [.env]
-# Overwrite the config with the sys'environment variables
-# Overwrite the config with the cli arguments
 config = Config()
-config.overwrite(**dotenv_values())
-config.overwrite(**os.environ)
-cli_runner(config)
