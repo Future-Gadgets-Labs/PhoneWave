@@ -12,6 +12,15 @@ services:
             - mongo:/data/db
         ports:
             - "27017:27017" # https://www.mongodb.com/docs/manual/reference/default-mongodb-port/
+    redis:
+        image: redis
+        restart: unless-stopped
+        hostname: redis
+        command: redis-server /usr/local/etc/redis/redis.conf
+        volumes:
+            - ./redis.conf:/usr/local/etc/redis/redis.conf
+        ports:
+            - "6379:6379"
     bot:
         build: .
         image: phonewave
@@ -19,10 +28,7 @@ services:
         restart: unless-stopped
         # This make me questions if we need .env 
         environment:
-            - MONGO_URI=mongodb://mongo:27017 # http://dochub.mongodb.org/core/connections
-            - MONGO_DATABASE=phonewave
-            - MONGO_USERNAME=phonewave
-            - MONGO_PASSWORD=changeme
+            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/?authMechanism=DEFAULT # http://dochub.mongodb.org/core/connections
         depends_on:
             - mongo
 

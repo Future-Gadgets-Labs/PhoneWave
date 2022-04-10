@@ -3,12 +3,11 @@ from discord.ext import bridge
 from discord.message import Message
 
 from app.config import config
+from app.cache import redis
 from app.database import database
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
 from app.utilities import handlers, logger
-
-prefix_cache = {}
 
 
 class PhoneWave(bridge.Bot):
@@ -18,7 +17,7 @@ class PhoneWave(bridge.Bot):
             guilds=True,
             guild_messages=True,
             guild_reactions=True,  # required to receive 'on_raw_reaction_add/remove' events
-            members=True,          # required to see list of members in a guild
+            members=True,  # required to see list of members in a guild
         )
 
         super().__init__(*args, intents=intents, command_prefix=self.command_prefix, **kwargs)
@@ -31,15 +30,18 @@ class PhoneWave(bridge.Bot):
 
     @staticmethod
     async def command_prefix(self, message: Message):
-        # this is messey but for now it does the job, later will optimize this
-        prefix = prefix_cache.get(message.guild.id)
-        if not prefix:
+        # we need to make sure to update the cache if we update the prefix of a guild
+        if message.guild is None:
+            return config.BOT_PREFIX
+
+        if not redis.exists(id):
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
-            prefix_cache[message.guild.id] = prefix
+            redis.set(message.guild.id, prefix)
+            return prefix
 
-        return prefix
+        return redis.get(id)
 
     def run(self):
         if not config.BOT_TOKEN:

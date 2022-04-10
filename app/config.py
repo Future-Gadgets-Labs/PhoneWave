@@ -15,15 +15,24 @@ class Config:
     MONGO_URI = None
     MONGO_DB = "phonewave"
 
-    @staticmethod
-    def overwrite(**kwargs):
+    # Redis
+    REDIS_HOST = "localhost"
+    REDIS_PORT = 6379
+    REDIS_DB = 0
+
+    def overwrite(self, **kwargs):
+        allowed_keys = [k for k in dir(self) if not k.startswith("_") and not callable(getattr(self, k))]
+
         for key, value in kwargs.items():
-            if not key.startswith("BOT_") and not key.startswith("MONGO_"):
-                continue  # ignore non-app configs
-            setattr(Config, key, value)
+            if key in allowed_keys:
+                setattr(Config, key, value)
 
 
+# Initialize the config
+# Overwrite the config with the environment file [.env]
+# Overwrite the config with the sys'environment variables
+# Overwrite the config with the cli arguments
 config = Config()
-config.overwrite(**dotenv_values())  # load .env file
-config.overwrite(**os.environ)       # load environment variables
+config.overwrite(**dotenv_values())
+config.overwrite(**os.environ)
 cli_runner(config)
