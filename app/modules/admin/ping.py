@@ -1,22 +1,23 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import Context
 
 from app.utilities import logger
 
 ContextType = commands.Context
 
 
-class BotCommand(commands.Cog):
+class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def ping(self, ctx: ContextType):
+    async def ping(self, ctx: Context):
         logger.info("Received 'testing' command...")
         return await ctx.send("Hello World 🥼")
 
     @commands.command()
-    async def user(self, ctx: ContextType, action=None, user: discord.Member = None):
+    async def user(self, ctx: Context, action=None, user: discord.Member = None):
         logger.info(f"User command with action '{action}' and user '{user}'")
 
         if user is None:
@@ -50,4 +51,4 @@ class BotCommand(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(BotCommand(bot))
+    bot.add_cog(Ping(bot))

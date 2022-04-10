@@ -1,41 +1,45 @@
-from discord.ext import commands
-
+import discord
+from discord.ext import bridge
 from discord.message import Message
 
-from app.exceptions.bad_config import BadConfig
+from app.config import config
 from app.database import database
 from app.database.models import Guild
-
+from app.exceptions.bad_config import BadConfig
 from app.utilities import handlers, logger
-from app.config import config
 
-temp_cache = {}
+prefix_cache = {}
 
 
-class PhoneWave(commands.Bot):
+class PhoneWave(bridge.Bot):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, command_prefix=self.command_prefix, **kwargs)
+        intents = discord.Intents(
+            message_content=True,
+            guilds=True,
+            guild_messages=True,
+            guild_reactions=True,  # required to receive 'on_raw_reaction_add/remove' events
+            members=True,          # required to see list of members in a guild
+        )
 
-        # autoload the commands, events & the modules
-        handlers.load_modules(self)
+        super().__init__(*args, intents=intents, command_prefix=self.command_prefix, **kwargs)
 
         # initialize the database
         database.init()
 
+        # autoload the commands, events & the modules
+        handlers.load_modules(self)
+
     @staticmethod
     async def command_prefix(self, message: Message):
         # this is messey but for now it does the job, later will optimize this
-        if message.guild.id in temp_cache:
-            return temp_cache[message.guild.id]
-        else:
-            logger.debug(f"Quierying guild prefix for {message.guild.name}... & caching it")
-            guild = Guild.objects(gid=message.guild.id).first()
-            temp_cache[message.guild.id] = guild.prefix if guild else config.BOT_PREFIX
+        prefix = prefix_cache.get(message.guild.id)
+        if not prefix:
+            logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
+            guild = Guild.objects(guild_id=message.guild.id).first()
+            prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
+            prefix_cache[message.guild.id] = prefix
 
-            if not guild:
-                Guild(gid=message.guild.id, prefix=config.BOT_PREFIX).save()
-
-            return temp_cache[message.guild.id]
+        return prefix
 
     def run(self):
         if not config.BOT_TOKEN:

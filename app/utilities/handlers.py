@@ -27,6 +27,7 @@ def load_modules(client: commands.Bot):
             try:
                 client.load_extension(f"app.modules.{module}.{extension}")
                 loaded.append({"module": module, "extension": extension})
+                logger.debug(f"Loaded {module}.{extension}")
             except Exception as e:
                 failed.append({"module": module, "extension": extension, "error": e})
 
