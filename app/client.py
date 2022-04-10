@@ -2,7 +2,8 @@ import discord
 from discord.ext import bridge
 from discord.message import Message
 
-from app import database, cache
+from app import database
+from app.cache import cache_get, cache_set, check as cache_check
 from app.config import config
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
@@ -23,7 +24,7 @@ class PhoneWave(bridge.Bot):
 
         # initialize MongoDB and Redis connections
         database.init()
-        cache.check()
+        cache_check()
 
         # autoload the commands, events & the modules
         handlers.load_modules(self)
@@ -34,14 +35,12 @@ class PhoneWave(bridge.Bot):
         if message.guild is None:
             return config.BOT_PREFIX
 
-        cache_key = 'prefix:' + str(message.guild.id)
-        prefix = cache.cache.get(cache_key)
+        prefix = cache_get("prefix", guild=message.guild)
         if not prefix:
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
-            cache.cache.set(cache_key, prefix)
-
+            cache_set("prefix", prefix, message.guild)
         return prefix
 
     def run(self):
