@@ -5,17 +5,9 @@ from discord.ext.bridge import BridgeContext
 from app import client
 from app.database.models import Guild, Role as RoleDB
 from app.utilities import logger
+from app.utilities.cogs import defer
 
 
-# TODO: open ticket in py-cord to make BridgeExtContext ignore 'ephemeral'
-async def defer(ctx: BridgeContext):
-    if isinstance(ctx, discord.ext.bridge.BridgeExtContext):
-        await ctx.defer()
-    elif isinstance(ctx, discord.ext.bridge.BridgeApplicationContext):
-        await ctx.defer(ephemeral=True)
-
-
-# TODO: make it so that only admins&mods can use this command
 class Role(commands.Cog):
     def __init__(self, bot: client.PhoneWave):
         self.bot = bot
@@ -133,8 +125,9 @@ class Role(commands.Cog):
         key = (guild_id, channel_id, message_id, emoji_id)
         return self.roles.get(key)
 
-    # TODO: find way to have group/spaces on normal and app/slash commands
     @bridge.bridge_command(name="role_assign")
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
     @discord.option(name="role", description="The self-service role")
     @discord.option(name="emoji", description="The emoji used to add the role")
     @discord.option(name="message", description="The message to listen for the emoji")
@@ -145,7 +138,7 @@ class Role(commands.Cog):
         emoji: discord.Emoji,
         message: discord.Message
     ):
-        """Assigns a given role when the user reacts the message."""
+        """Create a new self-service role."""
         await defer(ctx)
 
         if message is None and ctx.message.reference is not None:
@@ -168,12 +161,14 @@ class Role(commands.Cog):
         await self.assign_role(ctx.guild, role, emoji, message)
 
         await ctx.respond(f"Assigning {role.mention} to all users that react with {emoji}.")
-        await message.reply(f"Assigned role {role} with emoji {emoji} to this message", delete_after=30)
+        await message.reply(f"Self-service role {role} with emoji {emoji} to this message is now ready.", delete_after=30)
 
     @bridge.bridge_command(name="role_unassign")
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
     @discord.option(name="role", description="The self-service role")
     async def unassign(self, ctx: BridgeContext, role: discord.Role):
-        """Removes role assignment."""
+        """Remove self-service role."""
         await defer(ctx)
 
         if role is None:
@@ -198,11 +193,13 @@ class Role(commands.Cog):
         # Remove role assignment from database
         await self.unassign_role(ctx.guild, role)
 
-        await ctx.respond(f"All assignments to role {role.mention} have been removed.")
+        await ctx.respond(f"All mentions to the self-service role {role.mention} have been removed.")
 
     @bridge.bridge_command(name="role_list")
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)
     async def list(self, ctx: BridgeContext):
-        """Lists current role assignments on this guild."""
+        """List of all the self-service roles configured on this server."""
         await defer(ctx)
 
         embed = discord.Embed()
@@ -224,11 +221,16 @@ class Role(commands.Cog):
 
             is_first = False
 
+        if len(self.roles) < 1:
+            embed.add_field(name="Role", value="There are no self-service roles configured.")
+
         await ctx.respond(embed=embed)
 
     @bridge.bridge_command(name="role_resync")
+    @commands.guild_only()
+    @commands.has_permissions(manage_roles=True)  
     async def resync(self, ctx: BridgeContext):
-        """Forces a resync on all roles in this server"""
+        """Resync all self-service roles in this server"""
         await defer(ctx)
 
         await self.force_resync(resync_guild_id=ctx.guild.id)

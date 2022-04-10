@@ -1,16 +1,20 @@
-import redis as cache_server
+import redis
 
-from .config import config
 from app.utilities import logger
+from .config import config
 
-# no clue how to call it for now,
-
-redis = cache_server.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
+prefix_db = None
 
 
-def check_redis():
+def init():
+    global prefix_db
+    prefix_db = redis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_PREFIX_DB, decode_responses=True)
+    check()
+
+
+def check():
     try:
-        redis.ping()
+        prefix_db.ping()
         logger.info("Redis connected successfully.")
     except Exception as e:
         logger.critical(e)

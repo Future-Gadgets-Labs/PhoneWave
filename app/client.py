@@ -2,9 +2,8 @@ import discord
 from discord.ext import bridge
 from discord.message import Message
 
+from app import database, cache
 from app.config import config
-from app.cache import redis, check_redis
-from app.database import database
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
 from app.utilities import handlers, logger
@@ -22,27 +21,27 @@ class PhoneWave(bridge.Bot):
 
         super().__init__(*args, intents=intents, command_prefix=self.command_prefix, **kwargs)
 
-        # initialize the database & check redis
+        # initialize MongoDB and Redis connections
         database.init()
-        check_redis()
+        cache.init()
 
         # autoload the commands, events & the modules
         handlers.load_modules(self)
 
     @staticmethod
-    async def command_prefix(self, message: Message):
+    async def command_prefix(_bot: bridge.Bot, message: Message):
         # we need to make sure to update the cache if we update the prefix of a guild
         if message.guild is None:
             return config.BOT_PREFIX
 
-        if not redis.exists(message.guild.id):
+        prefix = cache.prefix_db.get(message.guild.id)
+        if not prefix:
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
-            redis.set(message.guild.id, prefix)
-            return prefix
+            cache.prefix_db.set(message.guild.id, prefix)
 
-        return redis.get(message.guild.id)
+        return prefix
 
     def run(self):
         if not config.BOT_TOKEN:
