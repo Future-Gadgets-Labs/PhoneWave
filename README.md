@@ -27,6 +27,11 @@ Building an image locally:
 3. Install dependencies with `pip install -r requirements.txt`
 4. Start bot with `python main.py`
 
+### Updating MongoDB migrations
+
+1. Run `mongoengine_migrate makemigrations -m "app.database.models" --uri "mongodb://phonewave:changeme@localhost" --directory "app/database/migrations"` to create the migration scripts
+2. Run `mongoengine_migrate migrate --dry-run` to test the migration (exclude `--dry-run` for the real deal)
+
 ## Ways to help
 
 - **Improve Documentation:** Adding missing information, fixing typos, etc.

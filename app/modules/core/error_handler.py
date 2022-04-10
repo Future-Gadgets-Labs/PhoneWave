@@ -34,7 +34,7 @@ class ErrorHandler(commands.Cog):
         """Commands error handler."""
         
         if ErrorHandler.is_unknown_error(error):
-            logger.error(error)
+            logger.exception(error)
 
         message = ErrorHandler.get_error_message(error)
         if message:

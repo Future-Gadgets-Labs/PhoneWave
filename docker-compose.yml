@@ -27,7 +27,7 @@ services:
         hostname: bot
         restart: unless-stopped
         environment:
-            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/?authMechanism=DEFAULT # http://dochub.mongodb.org/core/connections
+            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/ # http://dochub.mongodb.org/core/connections
             - REDIS_HOST=redis
         depends_on:
             - mongo

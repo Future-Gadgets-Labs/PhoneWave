@@ -3,6 +3,7 @@ from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext, BridgeApplicationContext, BridgeExtContext
 
 from app import client
+from app.utilities import emoji
 
 
 class Say(commands.Cog):
@@ -18,7 +19,7 @@ class Say(commands.Cog):
         if isinstance(ctx, BridgeExtContext):
             await ctx.message.delete()
         elif isinstance(ctx, BridgeApplicationContext):
-            await ctx.respond("<:7_:962668292131147786>", ephemeral=True)
+            await ctx.respond(f"{emoji.dark_okabe_emoji}", ephemeral=True)
 
         await ctx.channel.send(message)
 
