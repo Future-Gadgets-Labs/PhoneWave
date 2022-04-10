@@ -4,6 +4,7 @@ PhoneWave is a Discord bot written in Python that tears through the fabric of ti
 
 ## For Developers
 
+
 ### Base setup
 
 1. Create a ".env" and override any required variables appropriately (like `BOT_TOKEN`).
