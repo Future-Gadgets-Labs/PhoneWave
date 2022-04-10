@@ -2,7 +2,8 @@ import discord
 from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
-from app import client, cache
+from app import client
+from app.cache import cache
 from app.database.models import Guild
 from app.utilities.cogs import defer
 
@@ -27,7 +28,8 @@ class Prefix(commands.Cog):
         guild.save()
 
         # Update cache
-        cache.prefix_db.set(ctx.guild.id, prefix)
+        cache_key = 'prefix:' + str(ctx.guild.id)
+        cache.set(cache_key, prefix)
 
         await ctx.respond(f"Prefix changed to `{prefix}`!")
 

@@ -18,7 +18,7 @@ class Config:
     # Redis
     REDIS_HOST = "localhost"
     REDIS_PORT = 6379
-    REDIS_PREFIX_DB = 0
+    REDIS_DB = 0
 
     def __init__(self, *args, **kwargs):
         # Overwrite the config with the environment file [.env]
