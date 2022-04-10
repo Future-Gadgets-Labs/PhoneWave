@@ -23,7 +23,7 @@ class PhoneWave(bridge.Bot):
 
         # initialize MongoDB and Redis connections
         database.init()
-        cache.init()
+        cache.check()
 
         # autoload the commands, events & the modules
         handlers.load_modules(self)
@@ -34,12 +34,13 @@ class PhoneWave(bridge.Bot):
         if message.guild is None:
             return config.BOT_PREFIX
 
-        prefix = cache.prefix_db.get(message.guild.id)
+        cache_key = 'prefix:' + str(message.guild.id)
+        prefix = cache.cache.get(cache_key)
         if not prefix:
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
-            cache.prefix_db.set(message.guild.id, prefix)
+            cache.cache.set(cache_key, prefix)
 
         return prefix
 
