@@ -8,9 +8,11 @@ from app.utilities import logger
 redis = cache_server.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
 
 
-try:
-    redis.ping()
-except Exception as e:
-    logger.critical(e)
-    logger.critical("Redis is not running. Please start it.")
-    exit(1)
+def check_redis():
+    try:
+        redis.ping()
+        logger.info("Redis connected successfully.")
+    except Exception as e:
+        logger.critical(e)
+        logger.critical("Redis is not running. Please start it.")
+        exit(1)

@@ -3,7 +3,7 @@ from discord.ext import bridge
 from discord.message import Message
 
 from app.config import config
-from app.cache import redis
+from app.cache import redis, check_redis
 from app.database import database
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
@@ -22,8 +22,9 @@ class PhoneWave(bridge.Bot):
 
         super().__init__(*args, intents=intents, command_prefix=self.command_prefix, **kwargs)
 
-        # initialize the database
+        # initialize the database & check redis
         database.init()
+        check_redis()
 
         # autoload the commands, events & the modules
         handlers.load_modules(self)
@@ -34,14 +35,14 @@ class PhoneWave(bridge.Bot):
         if message.guild is None:
             return config.BOT_PREFIX
 
-        if not redis.exists(id):
+        if not redis.exists(message.guild.id):
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
             redis.set(message.guild.id, prefix)
             return prefix
 
-        return redis.get(id)
+        return redis.get(message.guild.id)
 
     def run(self):
         if not config.BOT_TOKEN:
