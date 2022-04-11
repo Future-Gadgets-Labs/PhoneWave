@@ -35,13 +35,12 @@ class PhoneWave(bridge.Bot):
         if message.guild is None:
             return config.BOT_PREFIX
 
-        prefix = cache_get("prefix", config.BOT_PREFIX, message.guild)
+        prefix = cache_get("prefix", guild=message.guild)
         if not prefix:
             logger.debug(f"Querying guild prefix for {message.guild.name}... & caching it")
             guild = Guild.objects(guild_id=message.guild.id).first()
             prefix = guild.prefix if guild and guild.prefix else config.BOT_PREFIX
             cache_set("prefix", prefix, message.guild)
-
         return prefix
 
     def run(self):
