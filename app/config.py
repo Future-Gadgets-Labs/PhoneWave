@@ -11,6 +11,10 @@ class Config:
     BOT_PREFIX = "p!"
     BOT_DEVS_ID = "100173058764976128|179480292413800448"
 
+    # Rank system
+    RANK_XP_TIMEOUT = 5 # Time in seconds
+    RANK_XP_REWARD = 15 # XP reward
+
     # MongoDB
     MONGO_URI = None
     MONGO_DB = "phonewave"
