@@ -76,8 +76,6 @@ class RankSystem(commands.Cog):
             return
             # Only track in guild text channels
 
-        print(RankSystem.ranks.__len__())
-
         curr_time = int(t.time())
 
         last_xp_timestamp = int(cache_get("ranking-timeout", 0, message.guild, message.author))

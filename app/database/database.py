@@ -22,6 +22,8 @@ def init():
 
 
 def get_member(gid, uid):
+    logger.warning("get_member is deprecated. Use Member.get_member instead.")
+
     member = Member.objects(uid=uid, gid=gid).first()
     if not member:
         member = Member(uid=uid, gid=gid, xp=0, level=0)

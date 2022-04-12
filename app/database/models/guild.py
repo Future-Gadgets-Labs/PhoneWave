@@ -1,6 +1,6 @@
 from mongoengine import *
 
-from app.database.models.role import Role
+from .role import Role
 
 
 class Guild(Document):
