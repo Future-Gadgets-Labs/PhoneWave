@@ -1,13 +1,25 @@
-import redis
-from discord import Guild as DiscordGuild
-from discord import Member as DiscordMember
-from discord import User as DiscordUser
 from typing import Union
 
-from app.utilities import logger
-from .config import config
+from redis import Redis as CacheServer
+from discord import Guild as DiscordGuild, Member as DiscordMember, User as DiscordUser
 
-cache = redis.Redis(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
+from .config import config
+from app.utilities import logger
+
+cache = CacheServer(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
+
+REDIS_PORT = config.REDIS_PORT
+REDIS_HOST = config.REDIS_HOST
+REDIS_DB = config.REDIS_DB
+
+
+class CacheManager:
+    cache = CacheServer(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, decode_responses=True)
+
+    def __init__(self, namespace=None):
+        pass
+
+r = CacheManager()
 
 
 def check():
@@ -19,7 +31,8 @@ def check():
         logger.critical("Redis is not running. Please start it.")
         exit(1)
 
-def format_key(key:str, guild:DiscordGuild=None, user:Union[DiscordMember,DiscordUser]=None):
+
+def format_key(key: str, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
     if guild is not None:
         key += ":g!" + str(guild.id)
 
@@ -28,7 +41,14 @@ def format_key(key:str, guild:DiscordGuild=None, user:Union[DiscordMember,Discor
 
     return key
 
-def cache_get(key:str, default_value=None, guild:DiscordGuild=None, user:Union[DiscordMember,DiscordUser]=None, should_add_value_if_missing:bool=True):
+
+def cache_get(
+    key: str,
+    default_value=None,
+    guild: DiscordGuild = None,
+    user: Union[DiscordMember, DiscordUser] = None,
+    should_add_value_if_missing: bool = True,
+):
     formatted_key = format_key(key, guild, user)
     value = cache.get(formatted_key)
 
@@ -40,7 +60,8 @@ def cache_get(key:str, default_value=None, guild:DiscordGuild=None, user:Union[D
 
     return value
 
-def cache_set(key:str, value, guild:DiscordGuild=None, user:Union[DiscordMember,DiscordUser]=None):
+
+def cache_set(key: str, value, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
     formatted_key = format_key(key, guild, user)
     cache.set(formatted_key, value)
 

@@ -1,6 +1,7 @@
 from discord.ext import commands
 
 from app.utilities import logger
+from app.database.models import Member
 
 
 class Presence(commands.Cog):
@@ -17,6 +18,8 @@ class Presence(commands.Cog):
 
     @commands.command()
     async def test(self, ctx: commands.Context):
+        member = Member.get_member(ctx.guild.id, ctx.author.id, create=False)
+
         await ctx.send("test")
 
 

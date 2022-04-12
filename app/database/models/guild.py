@@ -1,7 +1,7 @@
 from mongoengine import *
 
-from app.database.models.announcements import Announcements
-from app.database.models.role import Role
+from .announcements import Announcements
+from .role import Role
 
 
 class Guild(Document):
