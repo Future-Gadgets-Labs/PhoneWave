@@ -2,6 +2,7 @@ import os
 
 from dotenv import dotenv_values
 from .cli import cli_runner
+from .utilities import emoji
 
 
 class Config:
@@ -14,6 +15,10 @@ class Config:
     # Rank system
     RANK_XP_TIMEOUT = 5 # Time in seconds
     RANK_XP_REWARD = 15 # XP reward
+    
+    # Announcement
+    ANNOUNCEMENT_WELCOME = f"Everyone, welcome lab member #{{number}}, {{name}}! {emoji.smug_okabe_emoji}"
+    ANNOUNCEMENT_FAREWELL = f"It is with great sorrow that I say farewell to lab member #{{number}}, {{name}}. {emoji.dark_okabe_emoji}"
 
     # MongoDB
     MONGO_URI = None

@@ -8,6 +8,7 @@ from structlog.types import EventDict, WrappedLogger
 import structlog
 import logging
 
+LEVEL_TRACE = 5
 
 def filter_by_level(level):
     def filter_level(logger, method_name, event_dict):

@@ -3,7 +3,7 @@ from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
 from app import client
-from app.database.models import Guild, Role as RoleDB
+from app.database.models import Guild, Role as DatabaseRole
 from app.utilities import logger
 from app.utilities.cogs import defer
 
@@ -15,37 +15,37 @@ class Role(commands.Cog):
 
     async def load(self):
         for db_guild in Guild.objects:
-            guild = self.bot.get_guild(db_guild.guild_id)
+            guild = self.bot.get_guild(db_guild.gid)
 
             for db_role in db_guild.roles:
                 role = discord.utils.get(guild.roles, id=db_role.role_id)
 
-                key = (db_guild.guild_id, db_role.channel_id, db_role.message_id, db_role.emoji_id)
+                key = (db_guild.gid, db_role.channel_id, db_role.message_id, db_role.emoji_id)
                 self.roles[key] = role
 
                 logger.debug(f"[role] Loaded role '{role}'")
 
         logger.info(f"[role] Loaded {len(self.roles)} roles")
 
-    async def force_resync(self, resync_guild_id=None):
+    async def force_sync(self, guild_id=None):
         for key, role in list(self.roles.items()):
             users_with_role = set(role.members)
             users_with_reaction = set()
 
-            guild_id = key[0]
-            channel_id = key[1]
-            message_id = key[2]
-            emoji_id = key[3]
+            role_guild_id = key[0]
+            role_channel_id = key[1]
+            role_message_id = key[2]
+            role_emoji_id = key[3]
 
-            if resync_guild_id and resync_guild_id != guild_id:
+            if guild_id != role_guild_id:
                 continue
 
             # Fetch all users that requested to have this role
-            guild = self.bot.get_guild(guild_id)
-            channel = guild.get_channel(channel_id)
-            message = await channel.fetch_message(message_id)
+            guild = self.bot.get_guild(role_guild_id)
+            channel = guild.get_channel(role_channel_id)
+            message = await channel.fetch_message(role_message_id)
             for reaction in message.reactions:
-                if reaction.emoji.id != emoji_id:
+                if reaction.emoji.id != role_emoji_id:
                     continue
 
                 async for user in reaction.users():
@@ -67,9 +67,9 @@ class Role(commands.Cog):
                     await user.remove_roles(role)
                     logger.debug(f"[role] Removing role '{role}' to user '{user}'")
 
-            logger.debug(f"[role] Resynced role '{role}'")
+            logger.debug(f"[role] Synced role '{role}'")
 
-        logger.info(f"[role] Resynced {len(self.roles)} roles")
+        logger.info(f"[role] Synced {len(self.roles)} roles")
 
     async def assign_role(
         self,
@@ -79,12 +79,9 @@ class Role(commands.Cog):
         message: discord.Message,
     ):
         # Add role to database
-        db_role = RoleDB(role_id=role.id, channel_id=message.channel.id, message_id=message.id, emoji_id=emoji.id)
+        db_role = DatabaseRole(role_id=role.id, channel_id=message.channel.id, message_id=message.id, emoji_id=emoji.id)
 
-        db_guild = Guild.objects(guild_id=guild.id).first()
-        if not db_guild:
-            db_guild = Guild(guild_id=guild.id, prefix=None, roles=[])
-
+        db_guild = Guild.get_guild(guild.id)
         db_guild.roles.append(db_role)
         db_guild.save()
 
@@ -97,22 +94,15 @@ class Role(commands.Cog):
 
         logger.info(f"[role] Role '{role}' assigned to emoji '{emoji}' on message {message.id} on guild {db_guild.id}")
 
-    async def unassign_role(
-        self,
-        guild: discord.Guild,
-        role: discord.Role,
-    ):
+    async def unassign_role(self, guild: discord.Guild, role: discord.Role):
         # Remove role from database
-        db_guild = Guild.objects(guild_id=guild.id).first()
-        if db_guild:
-            deleted_role = False
-            for db_role in list(db_guild.roles):
-                if db_role.role_id == role.id:
-                    db_guild.roles.remove(db_role)
-                    deleted_role = True
+        db_guild = Guild.get_guild(guild.id)
 
-            if deleted_role:
-                db_guild.save()
+        for db_role in list(db_guild.roles):
+            if db_role.role_id == role.id:
+                db_guild.roles.remove(db_role)
+
+        db_guild.save()
 
         # Remove role from internal dict
         for k, r in list(self.roles.items()):
@@ -141,7 +131,7 @@ class Role(commands.Cog):
         """Create a new self-service role."""
         await defer(ctx)
 
-        if message is None and ctx.message.reference is not None:
+        if not message and ctx.message.reference:
             message = ctx.message.reference.resolved
 
         if role is None:
@@ -161,7 +151,7 @@ class Role(commands.Cog):
         await self.assign_role(ctx.guild, role, emoji, message)
 
         await ctx.respond(f"Assigning {role.mention} to all users that react with {emoji}.")
-        await message.reply(f"Self-service role {role} with emoji {emoji} to this message is now ready.", delete_after=30)
+        await message.reply(f"Self-service role {role.mention} with emoji {emoji} to this message is now ready.", delete_after=30)
 
     @bridge.bridge_command(name="role_unassign")
     @commands.guild_only()
@@ -215,8 +205,7 @@ class Role(commands.Cog):
             emoji = ctx.bot.get_emoji(emoji_id)
 
             embed.add_field(name="Role" if is_first else "\u200b", value=role.mention, inline=True)
-            embed.add_field(name="Emoji" if is_first else "\u200b",
-                            value=f"<:{emoji.name}:{emoji.id}> `:{emoji.name}:`", inline=True)
+            embed.add_field(name="Emoji" if is_first else "\u200b", value=f"{emoji} `:{emoji.name}:`", inline=True)
             embed.add_field(name="\u200b", value=f"\u200b")  # spacer
 
             is_first = False
@@ -226,21 +215,21 @@ class Role(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-    @bridge.bridge_command(name="role_resync")
+    @bridge.bridge_command(name="role_sync")
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)  
-    async def resync(self, ctx: BridgeContext):
-        """Resync all self-service roles in this server"""
+    async def sync(self, ctx: BridgeContext):
+        """Sync all self-service roles in this server"""
         await defer(ctx)
 
-        await self.force_resync(resync_guild_id=ctx.guild.id)
+        await self.force_sync(guild_id=ctx.guild.id)
 
-        await ctx.respond("All roles managed on this guild have been resync'd!")
+        await ctx.respond("All roles managed on this guild have been sync'd!")
 
     @commands.Cog.listener()
     async def on_ready(self):
         await self.load()
-        await self.force_resync()
+        await self.force_sync()
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
