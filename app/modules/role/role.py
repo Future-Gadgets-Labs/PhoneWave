@@ -3,8 +3,7 @@ from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
 from app import client
-from app.database.database import get_guild
-from app.database.models import Guild, Role as RoleDB
+from app.database.models import Guild, Role as DatabaseRole
 from app.utilities import logger
 from app.utilities.cogs import defer
 
@@ -80,9 +79,9 @@ class Role(commands.Cog):
         message: discord.Message,
     ):
         # Add role to database
-        db_role = RoleDB(role_id=role.id, channel_id=message.channel.id, message_id=message.id, emoji_id=emoji.id)
+        db_role = DatabaseRole(role_id=role.id, channel_id=message.channel.id, message_id=message.id, emoji_id=emoji.id)
 
-        db_guild = get_guild(gid=guild.id)
+        db_guild = Guild.get_guild(guild.id)
         db_guild.roles.append(db_role)
         db_guild.save()
 
@@ -95,13 +94,9 @@ class Role(commands.Cog):
 
         logger.info(f"[role] Role '{role}' assigned to emoji '{emoji}' on message {message.id} on guild {db_guild.id}")
 
-    async def unassign_role(
-        self,
-        guild: discord.Guild,
-        role: discord.Role,
-    ):
+    async def unassign_role(self, guild: discord.Guild, role: discord.Role):
         # Remove role from database
-        db_guild = get_guild(gid=guild.id)
+        db_guild = Guild.get_guild(guild.id)
 
         for db_role in list(db_guild.roles):
             if db_role.role_id == role.id:
@@ -136,7 +131,7 @@ class Role(commands.Cog):
         """Create a new self-service role."""
         await defer(ctx)
 
-        if message is None and ctx.message.reference is not None:
+        if not message and ctx.message.reference:
             message = ctx.message.reference.resolved
 
         if role is None:

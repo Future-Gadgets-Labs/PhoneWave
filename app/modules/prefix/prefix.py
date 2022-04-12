@@ -4,7 +4,7 @@ from discord.ext.bridge import BridgeContext
 
 from app import client
 from app.cache import cache_set
-from app.database.database import get_guild
+from app.database.models import Guild
 from app.utilities.cogs import defer
 
 
@@ -21,7 +21,7 @@ class Prefix(commands.Cog):
         await defer(ctx)
 
         # Update database entry
-        guild = get_guild(gid=ctx.guild.id)
+        guild = Guild.get_guild(ctx.guild.id)
         guild.prefix = prefix
         guild.save()
 

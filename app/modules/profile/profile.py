@@ -8,7 +8,7 @@ from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
 from app import client
-from app.database.database import get_member, get_member_by_labmem_number
+from app.database.models import Member
 from app.utilities.cogs import defer
 
 
@@ -39,19 +39,19 @@ class Profile(commands.Cog):
 
         db_member = None
         if user:
-            db_member = get_member(gid=ctx.guild.id, uid=user.id, create_if_doesnt_exists=False)
+            db_member = Member.get_member(ctx.guild.id, user.id, create=False)
         elif lab_member_number:
-            db_member = get_member_by_labmem_number(gid=ctx.guild.id, lab_member_number=lab_member_number)
+            db_member = Member.get_member_by_labmem_number(ctx.guild.id, lab_member_number)
 
         if not db_member:
             await ctx.respond(f"No information found for {user.name}.")
             return
 
         embed = discord.Embed()
-        embed.add_field(name="Lab Member", value=f"#{db_member.lab_member_number}", inline=False)
+        embed.add_field(name="Lab Member", value=f"#{db_member.lab_member_number:03d}", inline=False)
         embed.add_field(name="Joined", value=db_member.joined_at, inline=False)
         embed.add_field(name="Is Active?", value=db_member.is_active, inline=False)
-        embed.add_field(name="Is Veteran?", value=db_member.is_veretan, inline=False)
+        embed.add_field(name="Is Veteran?", value=db_member.is_veteran, inline=False)
 
         await ctx.respond(embed=embed)
 
@@ -69,7 +69,7 @@ class Profile(commands.Cog):
     async def sync(self, ctx: BridgeContext):
         """Forces a resync on all users in this server."""
         await defer(ctx)
-        await self.force_sync(guild_id=ctx.guild.id)
+        await self.force_sync(ctx.guild.id)
         await ctx.respond("All users on this server have been sync'd!")
 
     @commands.Cog.listener()

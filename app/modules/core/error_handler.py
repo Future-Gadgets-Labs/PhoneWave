@@ -20,7 +20,7 @@ class ErrorHandler(commands.Cog):
         elif isinstance(error, commands.UserInputError):
             return "Something about the arguments was wrong, please check the arguments and try again!"
         else:
-            return "Oh no! Could this be sabotage done by the Organization?!..."
+            return "Something went wrong. Could this be sabotage done by the Organization?!..."
 
     @staticmethod
     def is_unknown_error(error):
@@ -32,9 +32,9 @@ class ErrorHandler(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(self, ctx: Context, error: CommandError):
         """Commands error handler."""
-        
+
         if ErrorHandler.is_unknown_error(error):
-            logger.exception(error)
+            logger.error(error)
 
         message = ErrorHandler.get_error_message(error)
         if message:

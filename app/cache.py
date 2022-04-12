@@ -1,9 +1,11 @@
+import logging
 from typing import Union
 
 from redis import Redis as CacheServer
 from discord import Guild as DiscordGuild, Member as DiscordMember, User as DiscordUser
 
 from .config import config
+from .utilities.logger import LEVEL_TRACE
 from app.utilities import logger
 
 cache = CacheServer(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
@@ -32,7 +34,7 @@ def check():
         exit(1)
 
 
-def format_key(key: str, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
+def format_key(key: str, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None) -> str:
     if guild is not None:
         key += ":g!" + str(guild.id)
 
@@ -48,7 +50,7 @@ def cache_get(
     guild: DiscordGuild = None,
     user: Union[DiscordMember, DiscordUser] = None,
     should_add_value_if_missing: bool = True,
-):
+) -> str | None:
     formatted_key = format_key(key, guild, user)
     value = cache.get(formatted_key)
 
@@ -63,10 +65,19 @@ def cache_get(
 
 def cache_set(key: str, value, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
     formatted_key = format_key(key, guild, user)
-    cache.set(formatted_key, value)
+    logging.log(LEVEL_TRACE, f"[cache] SET {formatted_key} = {value}")
+
+    if value is not None:
+        cache.set(formatted_key, value)
 
 
-def cache_get_dict(key: str, default_value=None, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
+def cache_delete(key: str, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
+    formatted_key = format_key(key, guild, user)
+    logging.log(LEVEL_TRACE, f"[cache] DELETE {formatted_key}")
+    cache.delete(formatted_key)
+
+
+def cache_get_dict(key: str, default_value=None, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None) -> dict | None:
     formatted_key = format_key(key, guild, user)
     value = cache.hgetall(formatted_key)
     return value if value else default_value if default_value else {}
@@ -74,6 +85,7 @@ def cache_get_dict(key: str, default_value=None, guild: DiscordGuild = None, use
 
 def cache_set_dict(key: str, value: dict, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):
     formatted_key = format_key(key, guild, user)
+    logging.log(LEVEL_TRACE, f"[cache] SET DICT {formatted_key} = {value}")
     for k, v in value.items():
         if v:
             cache.hset(formatted_key, k, v)

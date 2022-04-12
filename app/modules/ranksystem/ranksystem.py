@@ -11,7 +11,7 @@ from discord.ext import commands
 
 from app import client
 from app.types.discord import DiscordMember, DiscordChannelType
-from app.database import get_member
+from app.database.models import Member
 from app.database.ranks.baserank import BaseRank
 from app.config import config
 from app.cache import cache_get, cache_set
@@ -81,7 +81,7 @@ class RankSystem(commands.Cog):
         if (curr_time - last_xp_timestamp) >= config.RANK_XP_TIMEOUT:
             cache_set("ranking-timeout", curr_time, message.guild, message.author)
 
-            member = get_member(message.guild.id, message.author.id)
+            member = Member.get_member(message.guild.id, message.author.id)
 
             member.xp += config.RANK_XP_REWARD
 
