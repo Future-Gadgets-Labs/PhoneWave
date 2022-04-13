@@ -4,11 +4,10 @@ import discord
 from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
-from app import client, config, utilities
+from app import client, config
 from app.cache import cache_get, cache_set, cache_delete
-from app.database.models import Guild, Member
-from app.database.models.badge import Badge
-from app.utilities.cogs import defer
+from app.database.models import Badge, Guild, Member
+from app.utilities import LabMember, defer
 from app.types.discord import DiscordGuild, DiscordMember, DiscordTextChannel, DiscordUser
 
 
@@ -77,8 +76,8 @@ class Announcements(commands.Cog):
         if not db_member.joined_at:
             db_member.joined_at = member.joined_at
         if not db_member.lab_member_number:
-            name, number = utilities.nick.extract_lab_member_number(member.display_name)
-            db_member.lab_member_number = number or Member.get_next_available_lab_member_number()
+            labmem = LabMember.from_name(member.display_name)
+            db_member.lab_member_number = labmem.lab_member_number or Member.get_next_available_lab_member_number()
         if db_member.is_veteran():
             db_member.badges.append(Badge(name="Operation Elysian Veteran"))
             if config.BADGE_VETERAN_ROLE_ID:
