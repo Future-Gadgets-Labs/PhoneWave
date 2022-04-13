@@ -87,5 +87,5 @@ def cache_set_dict(key: str, value: dict, guild: DiscordGuild = None, user: Unio
     formatted_key = format_key(key, guild, user)
     logging.log(LEVEL_TRACE, f"[cache] SET DICT {formatted_key} = {value}")
     for k, v in value.items():
-        if v:
+        if v is not None:
             cache.hset(formatted_key, k, v)

@@ -24,7 +24,7 @@ class Announcements(commands.Cog):
         channel_id_str = self.get_announcement_data(guild, "channel")
         channel_id = int(channel_id_str) if channel_id_str else None
 
-        if channel_id:
+        if channel_id is not None:
             return self.bot.get_channel(channel_id)
         elif guild.system_channel:
             return guild.system_channel
@@ -37,7 +37,7 @@ class Announcements(commands.Cog):
 
         if not cached:
             db_guild = Guild.get_guild(guild.id, create=False)
-            if db_guild:
+            if db_guild is not None:
                 cache_set("announcements:channel", db_guild.announcements.channel_id, guild=guild)
                 cache_set("announcements:welcome", db_guild.announcements.welcome, guild=guild)
                 cache_set("announcements:farewell", db_guild.announcements.farewell, guild=guild)
@@ -83,7 +83,7 @@ class Announcements(commands.Cog):
             db_member.badges.append(Badge(name="Operation Elysian Veteran"))
             if config.BADGE_VETERAN_ROLE_ID:
                 veteran_role = discord.utils.get(member.guild.roles, id=config.BADGE_VETERAN_ROLE_ID)
-                if veteran_role:
+                if veteran_role is not None:
                     await member.add_roles(veteran_role)
         db_member.save()
 
@@ -163,7 +163,7 @@ class Announcements(commands.Cog):
         # Update cache
         cache_set('announcements:channel', channel.id if channel else None, guild=ctx.guild)
 
-        if channel:
+        if channel is not None:
             await ctx.respond(f"Future announcements will be done on {channel.mention}.")
         else:
             await ctx.respond("Announcements channel has been unset.")
@@ -182,7 +182,7 @@ class Announcements(commands.Cog):
         guild.save()
 
         # Update cache
-        if message:
+        if message is not None:
             cache_set("announcements:welcome", message, guild=ctx.guild)
         else:
             cache_delete("announcements:welcome", guild=ctx.guild)
@@ -208,7 +208,7 @@ class Announcements(commands.Cog):
         guild.save()
 
         # Update cache
-        if message:
+        if message is not None:
             cache_set("announcements:farewell", message, guild=ctx.guild)
         else:
             cache_delete("announcements:farewell", guild=ctx.guild)
