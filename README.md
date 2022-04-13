@@ -11,7 +11,7 @@ PhoneWave is a Discord bot written in Python that tears through the fabric of ti
 
 ### Running with Docker
 
-1. Install Docker - https://docker.com/get-started/
+1. Install Docker - https://docker.com/get-started/****
 2. Run `docker-compose up -d` on the project root directory (where the `docker-compose.yml` file is present). This will start the bot and mongo services in the background.
 3. Run `docker-compose logs -f bot` if you wish to see the bot logs.
 

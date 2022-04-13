@@ -1,4 +1,4 @@
-from discord.bot import Bot as DiscordBot
+from discord.ext.commands.bot import Bot as DiscordBot
 
 import app.CLI
 from app.config import Config
@@ -10,11 +10,17 @@ class PhoneWave(DiscordBot):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, command_prefix=self.command_prefix, **kwargs)
 
-        self.add_cog("app.extentions.admin.AdminExtention")
+        self.load_extension(f"app.extentions.admin")
 
     @staticmethod
     async def command_prefix(bot: "PhoneWave", message: DiscordMessage):
         return "p!"
+
+    async def on_message(self, message: DiscordMessage):
+        if message.author.bot:
+            return
+        
+        await self.process_commands(message)
 
     async def on_ready(self):
         print(f"Logged in as {self.user}")

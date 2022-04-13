@@ -1,1 +1,1 @@
-from .admin import AdminExtention
+from .admin import *

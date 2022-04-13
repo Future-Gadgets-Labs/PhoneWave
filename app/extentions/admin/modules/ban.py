@@ -1,12 +1,12 @@
 from discord.ext import commands
 
-from ..admin import AdminExtention
+from app.extentions.base import BaseCog
 from app.utilities import logger
+from app.types.discord import DiscordMessage, DiscordMember, CommandContext
 
 
-class BanModule(AdminExtention):
-    #
-
-    @AdminExtention.listener()
-    async def on_message(self, member):
-        print("new message from " + member.name)
+class BanModule(BaseCog):
+    @commands.command()
+    async def ban(self, ctx: CommandContext, user: DiscordMember):
+        # logger.info(f"{user} was banned")
+        await ctx.send(f"{user} was banned")
