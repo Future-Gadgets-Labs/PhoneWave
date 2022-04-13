@@ -22,7 +22,7 @@ Building an image locally:
 
 ### Running locally
 
-1. Install Python 3.9+ - https://python.org/downloads/
+1. Install Python 3.10+ - https://python.org/downloads/
 2. Create a virtual environment with `python -m venv .venv` and activate it with `source .venv/bin/activate` (Linux) or `.venv\Scripts\activate.bat` (Windows)
 3. Install dependencies with `pip install -r requirements.txt`
 4. Start bot with `python main.py`
