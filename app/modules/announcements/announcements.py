@@ -6,9 +6,9 @@ from discord.ext.bridge import BridgeContext
 
 from app import client, config
 from app.cache import cache_get, cache_set, cache_delete
-from app.database.models import Guild, Member
-from app.utilities.cogs import defer
-from app.types.discord import DiscordGuild, DiscordMember, DiscordTextChannel
+from app.database.models import Badge, Guild, Member
+from app.utilities import LabMember, defer
+from app.types.discord import DiscordGuild, DiscordMember, DiscordTextChannel, DiscordUser
 
 
 class Announcements(commands.Cog):
@@ -23,7 +23,7 @@ class Announcements(commands.Cog):
         channel_id_str = self.get_announcement_data(guild, "channel")
         channel_id = int(channel_id_str) if channel_id_str else None
 
-        if channel_id:
+        if channel_id is not None:
             return self.bot.get_channel(channel_id)
         elif guild.system_channel:
             return guild.system_channel
@@ -36,7 +36,7 @@ class Announcements(commands.Cog):
 
         if not cached:
             db_guild = Guild.get_guild(guild.id, create=False)
-            if db_guild:
+            if db_guild is not None:
                 cache_set("announcements:channel", db_guild.announcements.channel_id, guild=guild)
                 cache_set("announcements:welcome", db_guild.announcements.welcome, guild=guild)
                 cache_set("announcements:farewell", db_guild.announcements.farewell, guild=guild)
@@ -48,7 +48,7 @@ class Announcements(commands.Cog):
                 elif announcement_type == "farewell":
                     cached = db_guild.announcements.farewell
 
-        return cached if cached else default
+        return cached or default
 
     def get_message_template(self, guild: DiscordGuild, announcement_type: str):
         default_template = self.default_message_templates.get(announcement_type)
@@ -73,13 +73,18 @@ class Announcements(commands.Cog):
         # Add member to the database
         db_member = Member.get_member(member.guild.id, member.id)
         db_member.is_active = True
-        db_member.is_veteran = False  # TODO: compute based on join_date
         if not db_member.joined_at:
             db_member.joined_at = member.joined_at
         if not db_member.lab_member_number:
-            db_member.lab_member_number = -1  # TODO: extract from nick or fetch from db if not available
+            labmem = LabMember.from_name(member.display_name)
+            db_member.lab_member_number = labmem.lab_member_number or Member.get_next_available_lab_member_number()
+        if db_member.is_veteran():
+            db_member.badges.append(Badge(name="Operation Elysian Veteran"))
+            if config.BADGE_VETERAN_ROLE_ID:
+                veteran_role = discord.utils.get(member.guild.roles, id=config.BADGE_VETERAN_ROLE_ID)
+                if veteran_role is not None:
+                    await member.add_roles(veteran_role)
         db_member.save()
-        # TODO: assign veteran role if is_veteran==True?
 
         message_template = self.get_message_template(member.guild, "welcome")
         message = self.prepare_message(message_template, member, db_member)
@@ -123,12 +128,16 @@ class Announcements(commands.Cog):
     @commands.has_permissions(administrator=True)
     @discord.option(name="type", description="The announcement type: welcome, farewell.")
     @discord.option(name="user", description="The guinea pig. Defaults to you.")
-    async def announcements_trigger(self, ctx: BridgeContext, type: str = None, user: DiscordMember = None):
+    async def announcements_trigger(self, ctx: BridgeContext, type: str = None, user: DiscordUser = None):
         """Trigger an announcement message."""
         await defer(ctx)
 
         if not user:
             user = ctx.author
+
+        # Convert DiscordUser to DiscordMember
+        if isinstance(user, DiscordUser):
+            user = ctx.guild.get_member(user.id)
 
         if type == 'welcome':
             await self.member_joined(user)
@@ -153,7 +162,7 @@ class Announcements(commands.Cog):
         # Update cache
         cache_set('announcements:channel', channel.id if channel else None, guild=ctx.guild)
 
-        if channel:
+        if channel is not None:
             await ctx.respond(f"Future announcements will be done on {channel.mention}.")
         else:
             await ctx.respond("Announcements channel has been unset.")
@@ -172,7 +181,7 @@ class Announcements(commands.Cog):
         guild.save()
 
         # Update cache
-        if message:
+        if message is not None:
             cache_set("announcements:welcome", message, guild=ctx.guild)
         else:
             cache_delete("announcements:welcome", guild=ctx.guild)
@@ -198,7 +207,7 @@ class Announcements(commands.Cog):
         guild.save()
 
         # Update cache
-        if message:
+        if message is not None:
             cache_set("announcements:farewell", message, guild=ctx.guild)
         else:
             cache_delete("announcements:farewell", guild=ctx.guild)

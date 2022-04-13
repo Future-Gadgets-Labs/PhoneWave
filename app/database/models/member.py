@@ -1,4 +1,9 @@
+from datetime import datetime
+
 from mongoengine import *
+
+from app import config
+from app.database.models.badge import Badge
 
 
 class Member(Document):
@@ -9,7 +14,7 @@ class Member(Document):
     joined_at = DateTimeField()
     lab_member_number = IntField()
     is_active = BooleanField(default=True)
-    is_veteran = BooleanField()
+    badges = EmbeddedDocumentListField(Badge, default=[])
 
     def __str__(self) -> str:
         return f"Member(gid={self.gid}, uid={self.uid}, xp={self.xp}, level={self.level})"
@@ -49,11 +54,19 @@ class Member(Document):
             None: If the member doesn't exist.
         """
 
-        if not gid:
-            raise ValueError("gid or uid must be none-zero.")
+        if not gid or not lab_member_number:
+            raise ValueError("gid and lab_member_number must be filled.")
 
         return cls.objects(gid=gid, lab_member_number=lab_member_number).first()
 
     @classmethod
     def get_next_available_lab_member_number(cls) -> int:
         return -1  # TODO
+
+    def is_veteran(self) -> bool:
+        if not self.joined_at:
+            return False
+
+        veteran_cutoff = datetime.strptime(config.BADGE_VETERAN_CUTOFF_DATE, '%Y-%m-%dT%H:%M:%S%z')
+
+        return self.joined_at < veteran_cutoff 

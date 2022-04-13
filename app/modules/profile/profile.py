@@ -38,9 +38,9 @@ class Profile(commands.Cog):
             user = ctx.author
 
         db_member = None
-        if user:
+        if user is not None:
             db_member = Member.get_member(ctx.guild.id, user.id, create=False)
-        elif lab_member_number:
+        elif lab_member_number is not None:
             db_member = Member.get_member_by_labmem_number(ctx.guild.id, lab_member_number)
 
         if not db_member:

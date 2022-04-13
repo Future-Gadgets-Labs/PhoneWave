@@ -9,6 +9,8 @@ def cli_runner(config):
     parser.add_argument("--rank-xp-reward", help="Reward per user message")
     parser.add_argument("--announcement-welcome", help="Default welcome message")
     parser.add_argument("--announcement-farewell", help="Default farewell message")
+    parser.add_argument("--badge-veteran-cutoff-date", help="Cutoff date for the \"Operation Elysian Veteran\" badge")
+    parser.add_argument("--badge-veteran-role-id", help="Role ID for the \"Operation Elysian Veteran\" role")
     parser.add_argument("--mongo-uri", help="The MongoDB URI/connection string")
     parser.add_argument("--mongo-db", help="The MongoDB application database")
     parser.add_argument("--redis-host", help="The Redis host")
@@ -22,13 +24,17 @@ def cli_runner(config):
     if args.prefix:
         config.set("BOT_PREFIX", args.prefix)
     if args.rank_xp_timeout:
-        config.set("RANK_XP_TIMEOUT", args.mongo_uri)
+        config.set("RANK_XP_TIMEOUT", args.rank_xp_timeout)
     if args.rank_xp_reward:
-        config.set("RANK_XP_REWARD", args.mongo_uri)
+        config.set("RANK_XP_REWARD", args.rank_xp_reward)
     if args.announcement_welcome:
-        config.set("ANNOUNCEMENT_WELCOME", args.mongo_uri)
+        config.set("ANNOUNCEMENT_WELCOME", args.announcement_welcome)
     if args.announcement_farewell:
-        config.set("ANNOUNCEMENT_FAREWELL", args.mongo_uri)
+        config.set("ANNOUNCEMENT_FAREWELL", args.announcement_farewell)
+    if args.badge_veteran_cutoff_date:
+        config.set("BADGE_VETERAN_CUTOFF_DATE", args.badge_veteran_cutoff_date)
+    if args.badge_veteran_role_id:
+        config.set("BADGE_VETERAN_ROLE_ID", args.badge_veteran_role_id)
     if args.mongo_uri:
         config.set("MONGO_URI", args.mongo_uri)
     if args.mongo_db:

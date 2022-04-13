@@ -37,7 +37,7 @@ class ErrorHandler(commands.Cog):
             logger.error(error)
 
         message = ErrorHandler.get_error_message(error)
-        if message:
+        if message is not None:
             await ctx.send(message, delete_after=30)
 
     @commands.Cog.listener()
@@ -48,7 +48,7 @@ class ErrorHandler(commands.Cog):
             logger.error(error)
 
         message = ErrorHandler.get_error_message(error)
-        if message:
+        if message is not None:
             await ctx.respond(message, ephemeral=True)
 
 
