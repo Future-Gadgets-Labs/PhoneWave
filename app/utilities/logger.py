@@ -2,11 +2,13 @@ import warnings
 import sys
 from io import StringIO
 
-from structlog.dev import BLUE, CYAN, DIM, MAGENTA, YELLOW, plain_traceback, _pad
+from structlog.dev import CYAN, MAGENTA, plain_traceback, _pad
 from structlog.types import EventDict, WrappedLogger
 
 import structlog
 import logging
+
+LEVEL_TRACE = 5
 
 
 def filter_by_level(level):

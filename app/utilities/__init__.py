@@ -1,3 +1,2 @@
-from . import handlers
+from .singleton_meta import SingletonMeta
 from .logger import logger
-from .bannana_catcher import bannana_catcher
