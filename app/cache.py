@@ -80,7 +80,7 @@ def cache_delete(key: str, guild: DiscordGuild = None, user: Union[DiscordMember
 def cache_get_dict(key: str, default_value=None, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None) -> dict | None:
     formatted_key = format_key(key, guild, user)
     value = cache.hgetall(formatted_key)
-    return value if value else default_value if default_value else {}
+    return value or default_value or {}
 
 
 def cache_set_dict(key: str, value: dict, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None):

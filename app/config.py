@@ -13,12 +13,16 @@ class Config:
     BOT_DEVS_ID = "100173058764976128|179480292413800448"
 
     # Rank system
-    RANK_XP_TIMEOUT = 5 # Time in seconds
-    RANK_XP_REWARD = 15 # XP reward
+    RANK_XP_TIMEOUT = 5  # Time in seconds
+    RANK_XP_REWARD = 15  # XP reward
     
     # Announcement
     ANNOUNCEMENT_WELCOME = f"Everyone, welcome lab member #{{number}}, {{name}}! {emoji.smug_okabe_emoji}"
     ANNOUNCEMENT_FAREWELL = f"It is with great sorrow that I say farewell to lab member #{{number}}, {{name}}. {emoji.dark_okabe_emoji}"
+    
+    # Badges
+    BADGE_VETERAN_CUTOFF_DATE = "2022-04-04T00:00:00Z"
+    BADGE_VETERAN_ROLE_ID = 960686844067065946
 
     # MongoDB
     MONGO_URI = None

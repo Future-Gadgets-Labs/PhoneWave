@@ -4,11 +4,12 @@ import discord
 from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
-from app import client, config
+from app import client, config, utilities
 from app.cache import cache_get, cache_set, cache_delete
 from app.database.models import Guild, Member
+from app.database.models.badge import Badge
 from app.utilities.cogs import defer
-from app.types.discord import DiscordGuild, DiscordMember, DiscordTextChannel
+from app.types.discord import DiscordGuild, DiscordMember, DiscordTextChannel, DiscordUser
 
 
 class Announcements(commands.Cog):
@@ -48,7 +49,7 @@ class Announcements(commands.Cog):
                 elif announcement_type == "farewell":
                     cached = db_guild.announcements.farewell
 
-        return cached if cached else default
+        return cached or default
 
     def get_message_template(self, guild: DiscordGuild, announcement_type: str):
         default_template = self.default_message_templates.get(announcement_type)
@@ -73,13 +74,18 @@ class Announcements(commands.Cog):
         # Add member to the database
         db_member = Member.get_member(member.guild.id, member.id)
         db_member.is_active = True
-        db_member.is_veteran = False  # TODO: compute based on join_date
         if not db_member.joined_at:
             db_member.joined_at = member.joined_at
         if not db_member.lab_member_number:
-            db_member.lab_member_number = -1  # TODO: extract from nick or fetch from db if not available
+            name, number = utilities.nick.extract_lab_member_number(member.display_name)
+            db_member.lab_member_number = number or Member.get_next_available_lab_member_number()
+        if db_member.is_veteran():
+            db_member.badges.append(Badge(name="Operation Elysian Veteran"))
+            if config.BADGE_VETERAN_ROLE_ID:
+                veteran_role = discord.utils.get(member.guild.roles, id=config.BADGE_VETERAN_ROLE_ID)
+                if veteran_role:
+                    await member.add_roles(veteran_role)
         db_member.save()
-        # TODO: assign veteran role if is_veteran==True?
 
         message_template = self.get_message_template(member.guild, "welcome")
         message = self.prepare_message(message_template, member, db_member)
@@ -123,12 +129,16 @@ class Announcements(commands.Cog):
     @commands.has_permissions(administrator=True)
     @discord.option(name="type", description="The announcement type: welcome, farewell.")
     @discord.option(name="user", description="The guinea pig. Defaults to you.")
-    async def announcements_trigger(self, ctx: BridgeContext, type: str = None, user: DiscordMember = None):
+    async def announcements_trigger(self, ctx: BridgeContext, type: str = None, user: DiscordUser = None):
         """Trigger an announcement message."""
         await defer(ctx)
 
         if not user:
             user = ctx.author
+
+        # Convert DiscordUser to DiscordMember
+        if isinstance(user, DiscordUser):
+            user = ctx.guild.get_member(user.id)
 
         if type == 'welcome':
             await self.member_joined(user)

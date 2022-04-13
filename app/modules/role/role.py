@@ -234,14 +234,14 @@ class Role(commands.Cog):
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         role = self.get_assigned_role(payload.guild_id, payload.channel_id, payload.message_id, payload.emoji.id)
-        if role is not None:
+        if role:
             await payload.member.add_roles(role)
             logger.info(f"[role] Added role '{role}' to '{payload.member}' on guild {payload.guild_id}")
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
         role = self.get_assigned_role(payload.guild_id, payload.channel_id, payload.message_id, payload.emoji.id)
-        if role is not None:
+        if role:
             guild = self.bot.get_guild(payload.guild_id)
             member = guild.get_member(payload.user_id)
             await member.remove_roles(role)
