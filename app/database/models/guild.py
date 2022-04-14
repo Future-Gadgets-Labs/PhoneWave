@@ -29,7 +29,10 @@ class Guild(Document):
         if not gid:
             raise ValueError("gid must be non-zero.")
 
-        if create:
-            return cls.objects.upsert_one(gid=gid)
+        guild = cls.objects(gid=gid).first()
 
-        return cls.objects(gid=gid).first()
+        if guild is None and create:
+            guild = Guild(gid=gid)
+            guild.save()
+
+        return guild

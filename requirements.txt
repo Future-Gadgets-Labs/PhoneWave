@@ -25,6 +25,7 @@ MarkupSafe==2.1.1
 mongodb-migrations==1.1.1
 mongoengine==0.24.1
 mongoengine-migrate==0.0.2
+mongomock==4.0.0
 multidict==6.0.2
 mypy-extensions==0.4.3
 numpy==1.22.3
