@@ -12,11 +12,14 @@ rich = "*"
 pillow = "*"
 pytest = "*"
 redis = "*"
+black = "*"
+pytest-asyncio = "*"
+testcord = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
 
 [scripts]
 bot = "python ./main.py"
+tests = "pytest"

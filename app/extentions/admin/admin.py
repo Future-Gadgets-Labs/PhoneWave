@@ -1,21 +1,23 @@
-from discord.ext import commands
+from app.extentions import BaseExtention
+from app.extentions._base.utilities import factory
 
-from app.extentions.base import BaseCog
-from app.utilities import logger
-from app.types.discord import DiscordMessage
-
-from .modules import BanModule
+from app.utilities import logger, loaders
+from app.types.discord import DiscordMessage, CommandContext
 
 
-class AdminExtention(BaseCog):
-    @BaseCog.listener()
+class AdminExtention(BaseExtention, name="Admin"):
+    @factory.register_event()
     async def on_message(self, message: DiscordMessage):
         print("new message from " + message.author.name)
 
+    @factory.register_command()
+    async def admin(self, ctx: CommandContext):
+        print("admin command called")
+
 
 def setup(bot):
-    bot.add_cog(AdminExtention(bot))
-    bot.add_cog(BanModule(bot))
+    parent = AdminExtention(bot)
+    loaders.load_modules(bot, parent)
 
 
 def teardown(bot):
