@@ -1,5 +1,6 @@
 from app.utilities.labmem import LabMember
 
+"""Tests validation of LabMember separator"""
 
 def test_invalid_inputs():
     assert LabMember.from_name("") == LabMember(name=None, lab_member_number=None)
@@ -39,4 +40,4 @@ def test_number_then_name_then_number():
 
 
 def test_shurturgal():
-    assert LabMember.from_name("『001』『 Shurturgal 』『002』") == LabMember(name="Shurturgal", lab_member_number=1)
+    assert LabMember.from_name("『001』『 Shurturgal 』『002』") == LabMember(name="『 Shurturgal 』", lab_member_number=1)

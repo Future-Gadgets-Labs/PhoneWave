@@ -12,7 +12,7 @@ def init():
         raise BadConfig("MONGO_URI is not set.")
 
     try:
-        mongoengine.connect(db=config.MONGO_DB, host=config.MONGO_URI)
+        mongoengine.connect(db=config.MONGO_DB, host=config.MONGO_URI, uuidRepresentation="standard")
         logger.info("MongoDB connected successfully.")
     except Exception as e:
         logger.critical(e)

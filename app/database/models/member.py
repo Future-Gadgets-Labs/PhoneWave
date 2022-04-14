@@ -5,7 +5,6 @@ from mongoengine import *
 from app import config
 from app.database.models.badge import Badge
 
-
 class Member(Document):
     gid = LongField(null=False, required=True)
     uid = LongField(null=False, required=True, primary_key=True, unique_with=["gid"])
@@ -34,12 +33,15 @@ class Member(Document):
         """
 
         if not gid or not uid:
-            raise ValueError("gid or uid must be none-zero.")
+            raise ValueError("gid and uid must be non-zero")
 
-        if create:
-            return cls.objects.upsert_one(gid=gid, uid=uid)
+        mem = cls.objects(gid=gid, uid=uid).first()
 
-        return cls.objects(gid=gid, uid=uid).first()
+        if mem is None and create:
+            mem = cls(gid=gid, uid=uid)
+            mem.save()
+
+        return mem
 
     @classmethod
     def get_member_by_labmem_number(cls, gid: int, lab_member_number: int) -> "Member":
