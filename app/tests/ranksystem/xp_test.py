@@ -1,6 +1,5 @@
 import pytest
-import discord.ext.test as testcord
-from discord.ext.test.backend import make_user, make_member
+import vendor.discord.ext.test as testcord
 
 from app.config import config
 from app.database.models.member import Member
