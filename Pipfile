@@ -1,0 +1,27 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+mongoengine = "*"
+py-cord = {git = "https://github.com/Pycord-Development/pycord"}
+rich = "*"
+pillow = "*"
+pytest = "*"
+redis = "*"
+black = "*"
+structlog = "*"
+python-dotenv = "*"
+testcord = {ref = "feature/improve-coverage", git = "https://github.com/KoalaBotUK/testcord"}
+tox = "*"
+mongomock = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+bot = "python ./main.py"
+tests = "pytest"
