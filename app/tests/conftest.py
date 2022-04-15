@@ -8,7 +8,8 @@ from app.config import config
 
 @pytest.fixture
 def mock_phonewave(event_loop):
-    config.MONGO_URI = "mongomock://localhost/"
+    config.MONGO_URI = config.MONGO_TEST_URI
+    assert config.MONGO_URI.startswith("mongomock://")  # Make sure we're not modifying the real database
     mock_phonewave = PhoneWave(loop=event_loop)
     testcord.configure(mock_phonewave)
     return mock_phonewave
