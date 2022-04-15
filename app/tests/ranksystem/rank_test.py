@@ -1,6 +1,6 @@
 import pytest
-import discord.ext.test as testcord
-from discord.ext.test.backend import make_role
+import vendor.discord.ext.test as testcord
+from vendor.discord.ext.test.backend import make_role
 
 from app.config import config
 from app.database.models.rank import Rank

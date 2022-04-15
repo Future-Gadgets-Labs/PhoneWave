@@ -1,7 +1,7 @@
 import glob
 
 import pytest
-import discord.ext.test as testcord
+import vendor.discord.ext.test as testcord
 
 from app import PhoneWave
 from app.config import config
