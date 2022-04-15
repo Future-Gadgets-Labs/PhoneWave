@@ -13,7 +13,7 @@ redis = "*"
 black = "*"
 structlog = "*"
 python-dotenv = "*"
-testcord = "*"
+testcord = {ref = "feature/improve-coverage", git = "https://github.com/KoalaBotUK/testcord"}
 tox = "*"
 
 [dev-packages]

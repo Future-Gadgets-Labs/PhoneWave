@@ -8,7 +8,6 @@ from ..utilities import factory
 # Factory / Commands
 
 
-@pytest.mark.asyncio
 async def test_can_register_command(client):
     """Checks if the decorators registers the command"""
 
@@ -34,8 +33,6 @@ def test_can_register_command_with_name():
 
 
 # Factory / Events
-
-
 def test_can_register_event(client):
     """Checks if the decorators registers the event"""
 

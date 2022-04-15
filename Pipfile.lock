@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b545091af9f20e7e0fa99e02974ad56554328d2ba5f4e21aa709bd800eaa61f4"
+            "sha256": "981bbf2e516727e3c887cf50c2ac39d8e6f55a4e61cf80dd740dcbabe440bbae"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -574,12 +574,12 @@
             "version": "==21.5.0"
         },
         "testcord": {
+            "git": "https://github.com/KoalaBotUK/testcord",
             "hashes": [
                 "sha256:0a4715d6268e10496f293f0cc3b16592a104ff6afe7dca9b31984bce8f77e7a5",
                 "sha256:a05ca6c8e1cd3a5dc4c57ab9805a05a26662f0e93fe313a3e5d90b9852f0fae4"
             ],
-            "index": "pypi",
-            "version": "==0.0.1"
+            "ref": "a6fa99559a888994060ad651af422437c2ad21de"
         },
         "toml": {
             "hashes": [
