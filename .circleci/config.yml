@@ -1,0 +1,26 @@
+version: 2.1
+
+orbs:
+    # The python orb contains a set of prepackaged circleci configuration you can use repeatedly in your configurations files
+    # Orb commands and jobs help you with common scripting around a language/tool
+    # so you dont have to copy and paste it everywhere.
+    # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/python
+    python: circleci/python@1.2
+
+workflows:
+    tests:
+        # https://circleci.com/docs/2.0/configuration-reference/#workflows
+        jobs:
+            - run-tests
+
+jobs:
+    run-tests:
+        executor: python/default
+        steps:
+            - checkout
+            - python/install-packages:
+                  pkg-manager: pipenv
+            - run:
+                  command: |
+                      pipenv run tests
+                  name: Tests
