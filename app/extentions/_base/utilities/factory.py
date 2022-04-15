@@ -13,10 +13,10 @@ def register_command(*args, **kwargs):
     return decorator
 
 
-def register_event(**kwargs):
+def register_event(*args, **kwargs):
     """Register an event"""
 
     def decorator(func):
-        return commands.Cog.listener(**kwargs)(func)
+        return commands.Cog.listener(*args, **kwargs)(func)
 
     return decorator

@@ -7,7 +7,7 @@
    <a href="https://discord.gg/nAqaXhpafP">
       <img src="https://img.shields.io/discord/959641125763809294?color=7289da&logo=discord&logoColor=white" alt="Discord server" />
     </a>
-    <a href="https://www.npmjs.com/package/corde">
+    <a href="#about">
       <img alt="version" src="https://img.shields.io/github/pipenv/locked/python-version/Future-Gadgets-Labs/PhoneWave" />
     </a>
   </p>

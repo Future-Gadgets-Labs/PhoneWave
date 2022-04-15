@@ -2,7 +2,7 @@ from discord.ext.commands.bot import Bot as DiscordBot
 
 import app.CLI
 from app.config import Config
-from app.utilities import logger, loaders
+from app.utilities import logger, loaders, SingletonMeta
 from app.types.discord import DiscordMessage
 
 

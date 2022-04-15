@@ -9,3 +9,4 @@ from discord import VoiceState as DiscordVoiceState
 
 #
 from discord.ext.commands import Context as CommandContext
+from discord.ext.commands import Command

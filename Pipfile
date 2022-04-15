@@ -4,22 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-python-dotenv = "*"
-structlog = "*"
-py-cord = "*"
 mongoengine = "*"
+py-cord = "*"
 rich = "*"
 pillow = "*"
 pytest = "*"
 redis = "*"
 black = "*"
-pytest-asyncio = "*"
+structlog = "*"
+python-dotenv = "*"
 testcord = "*"
 tox = "*"
 
 [dev-packages]
 
 [requires]
+python_version = "3.10"
 
 [scripts]
 bot = "python ./main.py"
