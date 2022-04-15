@@ -14,7 +14,7 @@ class Rank(Document):
 
     @classmethod
     def get_rank(cls, guild: Guild, level:int = None, role_id:int|str = None, create:bool = False) -> "Rank":
-        """Get a member from the database.
+        """Get a rank from the database.
 
         Args:
             guild (Guild): The guild.

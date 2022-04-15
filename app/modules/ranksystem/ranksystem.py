@@ -7,15 +7,14 @@ import discord
 from discord import Forbidden
 from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
-from discord.utils import get as find
 
 from app import client
-from app.types.discord import DiscordMember, DiscordChannelType, DiscordObject, DiscordRole
+from app.types.discord import DiscordMember, DiscordChannelType, DiscordObject
 from app.database.models import Member
 from app.database.models import Rank
 from app.config import config
 from app.cache import cache_get, cache_set
-from app.utilities import logger, defer
+from app.utilities import logger, defer, finders
 
 
 def get_required_xp_for_level(level, current_xp=0):
@@ -99,33 +98,18 @@ class RankSystem(commands.Cog):
         """Creates a rank with a role tied to it. Additionally binds a message."""
         await defer(ctx)
 
-        # Find the role from the information given
-        match = re.search(r"^\d+$", role)  # Raw Snowflake ID match.
-        if match is not None:
-            # We have a Snowflake id!
-            role = int(match.group(0))
-
-        else:
-            match = re.search(r"(?:^<@&(\d+)>$)", role)  #
-            if match is not None:
-                # We have a discord-formatted role id! Group 0 is the snowflake of the role
-                role = int(match.group(1))
-            else:
-                # Check if it's a role's name. If it isn't, the role is None and it doesn't exist
-                role = find(ctx.guild.roles, name=role)
-                if role is not None:
-                    role = role.id
+        role = finders.find_role(ctx.guild, role)
 
         if role is None:
             await ctx.respond("An invalid role was provided.")
             return
 
-        if Rank.get_rank(ctx.guild, role_id=role) is not None:
+        if Rank.get_rank(ctx.guild, role_id=role.id) is not None:
             await ctx.respond("This rank was already set! Please remove it before trying to add a new one.")
             return
 
         # Create rank object. We're avoiding Rank.get_rank to also initialize the message field
-        rank = Rank(level=level, gid=ctx.guild.id, role_id=role, message=message)
+        rank = Rank(level=level, gid=ctx.guild.id, role_id=role.id, message=message)
 
         if rank is not None:
             rank.save()
