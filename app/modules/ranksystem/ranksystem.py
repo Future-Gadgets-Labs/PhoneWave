@@ -68,8 +68,6 @@ class RankSystem(commands.Cog):
         if message.channel.type != DiscordChannelType.text:
             return  # Only track in guild text channels
 
-        print(message.content)
-
         curr_time = int(t.time())
 
         last_xp_timestamp = int(cache_get("ranking-timeout", 0, message.guild, message.author))
