@@ -33,7 +33,7 @@ We do maintain an instance of PhoneWave, and can be invited over the link below.
 
 > There are multiples ways of running the bot.
 
-... WIP
+WIP
 
 ## Contributing
 
