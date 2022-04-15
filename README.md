@@ -31,25 +31,16 @@ We do maintain an instance of PhoneWave, and can be invited over the link below.
 
 ## 🛰️ Setup, running the bot yourself
 
-> Few things need to be configured before you can use PhoneWave.
+> There are multiples ways of running the bot.
 
 ... WIP
 
 ## Contributing
 
-Since the bot is open source, we welcome any suggestions and contributions.
+Find more details in the [contributing guide](./CONTRIBUTING.md).
 
 ## Ways to help
 
 - **Improve Documentation:** Adding missing information, fixing typos, etc.
 - **Feedback:** Report bugs, request features, etc.
 - **Contribute:** Propose new features, or find an existing one. 
-
-### Contributing Workflow
-
-- Tell us what you are planning before you start.
-- Fork the repository
-- Make changes to the code
-- Run all the test, check that all of them passed.
-- Make a pull request 
-- Your PR is Merged, you are now a supahacka.

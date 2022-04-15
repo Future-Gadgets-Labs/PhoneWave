@@ -15,6 +15,7 @@ redis = "*"
 black = "*"
 pytest-asyncio = "*"
 testcord = "*"
+tox = "*"
 
 [dev-packages]
 

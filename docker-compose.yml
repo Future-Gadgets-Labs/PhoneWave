@@ -11,7 +11,7 @@ services:
         volumes:
             - mongo:/data/db
         ports:
-            - "27017:27017" # https://www.mongodb.com/docs/manual/reference/default-mongodb-port/
+            - "27017:27017"
     redis:
         image: redis:7.0-rc
         restart: unless-stopped
@@ -27,7 +27,7 @@ services:
         hostname: bot
         restart: unless-stopped
         environment:
-            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/?authMechanism=DEFAULT # http://dochub.mongodb.org/core/connections
+            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/?authMechanism=DEFAULT
             - REDIS_HOST=redis
         depends_on:
             - mongo
