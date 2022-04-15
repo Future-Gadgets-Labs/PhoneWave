@@ -1,31 +1,43 @@
-# PhoneWave
+<div align="center">
+  <br />
+  <p>
+    <img width="120" height="120" src="./.github/assets/logo-rounded-corners.png" />
+  </p>
+  <p>
+   <a href="https://discord.gg/nAqaXhpafP">
+      <img src="https://img.shields.io/discord/959641125763809294?color=7289da&logo=discord&logoColor=white" alt="Discord server" />
+    </a>
+    <a href="https://www.npmjs.com/package/corde">
+      <img alt="version" src="https://img.shields.io/github/pipenv/locked/python-version/Future-Gadgets-Labs/PhoneWave" />
+    </a>
+  </p>
+</div>
 
-PhoneWave is a Discord bot written in Python that tears through the fabric of time and space to deliver all the Discord needs a mad scientist might have. You can find us in our [Laboratory](https://discord.gg/nAqaXhpafP).
+## ❔ About
 
-## For Developers
+PhoneWave is a Discord bot written in Python that tears through the fabric of time and space, to fullfil any wishes a mad scientist might have. 
 
+You can find us in our [Laboratory](https://discord.gg/nAqaXhpafP).
 
-### Base setup
+## 📚 Features
 
-1. Create a ".env" and override any required variables appropriately (like `BOT_TOKEN`).
+WIP
 
-### Running with Docker
+## Inviting PhoneWave to your server
 
-1. Install Docker - https://docker.com/get-started/****
-2. Run `docker-compose up -d` on the project root directory (where the `docker-compose.yml` file is present). This will start the bot and mongo services in the background.
-3. Run `docker-compose logs -f bot` if you wish to see the bot logs.
+We do maintain an instance of PhoneWave, and can be invited over the link below.
 
-Building an image locally:
-1. Create the Docker image with `docker-compose build`. This creates an image named "phonewave:latest" 
-2. Tag the image with your DockerHub username: `docker image tag phonewave:latest your-username/phonewave:latest`
-3. Push image to DockerHub: `docker push your-username/phonewave:latest`
+> https://example.com/invite
 
-### Running locally
+## 🛰️ Setup, running the bot yourself
 
-1. Install Python 3.9+ - https://python.org/downloads/
-2. Create a virtual environment with `python -m venv .venv` and activate it with `source .venv/bin/activate` (Linux) or `.venv\Scripts\activate.bat` (Windows)
-3. Install dependencies with `pip install -r requirements.txt`
-4. Start bot with `python main.py`
+> Few things need to be configured before you can use PhoneWave.
+
+... WIP
+
+## Contributing
+
+Since the bot is open source, we welcome any suggestions and contributions.
 
 ## Ways to help
 
