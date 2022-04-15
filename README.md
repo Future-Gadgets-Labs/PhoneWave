@@ -10,8 +10,12 @@
     <a href="#about">
       <img alt="version" src="https://img.shields.io/github/pipenv/locked/python-version/Future-Gadgets-Labs/PhoneWave" />
     </a>
+    <a href="#status">
+      <img alt="status" src="https://circleci.com/gh/Future-Gadgets-Labs/PhoneWave/tree/experiments.svg?style=svg" />
+    </a>
   </p>
 </div>
+
 
 ## ❔ About
 
