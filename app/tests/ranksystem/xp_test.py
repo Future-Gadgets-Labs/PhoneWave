@@ -22,19 +22,18 @@ async def test_new_user_has_xp(mock_phonewave):  # We need mock_phonewave fixtur
 async def test_user_can_gain_xp(mock_phonewave):
     """Tests the functionality of adding xp to a user in the db"""
     
-    user = make_user("XPUser", 1)  # Our test member
     guild = mock_phonewave.guilds[0]  # The guild to join (the bot is there already)
-    member = make_member(user, guild)  # Make our user join, now he's a member
+    member = guild.members[0]  # Our test member
     
     # Create entry in db with xp already set
-    dbmember = Member(gid=guild.id, uid=user.id, xp=15)
+    dbmember = Member(gid=guild.id, uid=member.id, xp=15)
     dbmember.save()
 
     # Send message to get xp (as the member)
     await testcord.message("Test message", member=member)
 
     # Fetch from DB again (our object isn't synced anymore)
-    dbmember = Member.get_member(gid=guild.id, uid=user.id)
+    dbmember = Member.get_member(gid=guild.id, uid=member.id)
 
     # 15 default + xp value should equal out
     assert dbmember.xp == 15 + config.RANK_XP_REWARD

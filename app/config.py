@@ -27,6 +27,7 @@ class Config:
     # MongoDB
     MONGO_URI = None
     MONGO_DB = "phonewave"
+    MONGO_TEST_URI = "mongomock://localhost/"
 
     # Redis
     REDIS_HOST = "localhost"
