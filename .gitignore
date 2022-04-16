@@ -210,3 +210,6 @@ $RECYCLE.BIN/
 
 !.env.example
 /.vscode/ext
+
+# Do not use Pip for dependency management - use Pipenv instead
+/requirements.txt
