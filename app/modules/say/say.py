@@ -10,9 +10,9 @@ class Say(commands.Cog):
     def __init__(self, bot: client.PhoneWave):
         self.bot = bot
 
+    # @commands.has_permissions(administrator=True)  
     @bridge.bridge_command()
     @commands.guild_only()
-    @commands.has_permissions(administrator=True)  
     @discord.option(name="message", description="The message to say in chat.")
     async def say(self, ctx: BridgeContext, *, message: str):
         """Forces the bot to say whatever you desire."""

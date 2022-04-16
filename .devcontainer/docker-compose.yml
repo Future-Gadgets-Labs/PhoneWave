@@ -1,24 +1,7 @@
 version: '3'
 services:
-    mongo_dev:
-        hostname: mongo_dev
-        environment:
-            - MONGO_INITDB_ROOT_USERNAME=phonewave
-            - MONGO_INITDB_ROOT_PASSWORD=changeme
-        volumes:
-            - dev_volume/mongo/db/:/data/db
-            - dev_volume/mongo/logs/:/data/logs
-            - dev_volume/mongo/mongod.conf:/etc/mongod.conf
-    redis_dev:
-        hostname: redis_dev
-        volumes:
-            - dev_volume/redis/db/:/data
-            - dev_volume/redis.conf:/usr/local/etc/redis/redis.conf
     bot:
         volumes:
             - .:/home/phonewave
             - ../.vscode/ext/:/root/.vscode-server/extensions
         command: /bin/sh -c "while sleep 1000; do :; done"
-
-volumes:
-    dev_volume:
