@@ -1,38 +1,38 @@
 version: '3.7'
 
 services:
-    mongo:
+    mongo_dev:
         image: mongo
         restart: unless-stopped
-        hostname: mongo
+        hostname: mongo_dev
         environment:
             - MONGO_INITDB_ROOT_USERNAME=phonewave
             - MONGO_INITDB_ROOT_PASSWORD=changeme
         volumes:
-            - mongo:/data/db
+            - dev_volume/mongo/db/:/data/db
+            - ./.docker/mongo/logs/:/data/logs
+            - ./.docker/mongo/mongod.conf:/etc/mongod.conf
         ports:
-            - "27017:27017" # https://www.mongodb.com/docs/manual/reference/default-mongodb-port/
-    redis:
+            - "8000:27017"
+    redis_dev:
         image: redis:7.0-rc
         restart: unless-stopped
-        hostname: redis
+        hostname: redis_dev
         volumes:
-            - redis:/data
+            - dev_volume/redis/db/:/data
             - ./.docker/redis.conf:/usr/local/etc/redis/redis.conf
         ports:
-            - "6379:6379"
-    bot:
+            - "8001:6379"
+    bot_dev:
         build: .
-        image: phonewave
-        hostname: bot
         restart: unless-stopped
         environment:
-            - MONGO_URI=mongodb://phonewave:changeme@localhost:27017/ # http://dochub.mongodb.org/core/connections
-            - REDIS_HOST=redis
+            - MONGO_URI="mongodb://phonewave:changeme@mongo_dev:27017/?authMechanism=DEFAULT"
+            - REDIS_HOST=redis_dev
         depends_on:
-            - mongo
-            - redis
+            - mongo_dev
+            - redis_dev
 
 volumes:
-    mongo:
-    redis:
+    dev_volume:
+

@@ -10,7 +10,7 @@ class Config:
     BOT_ENV = "development"  # development, production, testing
     BOT_TOKEN = None
     BOT_PREFIX = "p!"
-    BOT_DEVS_ID = "100173058764976128|179480292413800448"
+    BOT_DEVS_ID = "179480292413800448|100173058764976128|208391392039272448"
 
     # Rank system
     RANK_XP_TIMEOUT = 5  # Time in seconds

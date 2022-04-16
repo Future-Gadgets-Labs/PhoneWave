@@ -15,15 +15,6 @@ REDIS_HOST = config.REDIS_HOST
 REDIS_DB = config.REDIS_DB
 
 
-class CacheManager:
-    cache = CacheServer(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, decode_responses=True)
-
-    def __init__(self, namespace=None):
-        pass
-
-r = CacheManager()
-
-
 def check():
     try:
         cache.ping()
@@ -77,7 +68,9 @@ def cache_delete(key: str, guild: DiscordGuild = None, user: Union[DiscordMember
     cache.delete(formatted_key)
 
 
-def cache_get_dict(key: str, default_value=None, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None) -> dict | None:
+def cache_get_dict(
+    key: str, default_value=None, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None
+) -> dict | None:
     formatted_key = format_key(key, guild, user)
     value = cache.hgetall(formatted_key)
     return value or default_value or {}
