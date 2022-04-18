@@ -16,6 +16,7 @@ python-dotenv = "*"
 testcord = {ref = "feature/improve-coverage", git = "https://github.com/KoalaBotUK/testcord"}
 tox = "*"
 mongomock = "*"
+python-json-logger = "*"
 
 [dev-packages]
 

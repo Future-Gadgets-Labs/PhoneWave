@@ -8,6 +8,7 @@ from app.config import config
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
 from app.utilities import handlers, logger
+from app.database.cache_server import RedisCache
 
 
 class PhoneWave(bridge.Bot):

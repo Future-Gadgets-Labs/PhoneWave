@@ -1,35 +1,14 @@
-import warnings
-import sys
 from io import StringIO
-
-from structlog.dev import BLUE, CYAN, DIM, MAGENTA, YELLOW, plain_traceback, _pad
-from structlog.types import EventDict, WrappedLogger
-
-import structlog
+from logging.config import dictConfig
 import logging
+import sys
+import warnings
+
+from structlog.dev import CYAN, MAGENTA, plain_traceback, _pad
+from structlog.types import EventDict, WrappedLogger
+import structlog
 
 LEVEL_TRACE = 5
-
-def filter_by_level(level):
-    def filter_level(logger, method_name, event_dict):
-        this_level = structlog.stdlib._NAME_TO_LEVEL[method_name]
-
-        if this_level >= level:
-            return event_dict
-        else:
-            raise structlog.DropEvent
-
-    return filter_level
-
-
-def add_log_name(logger, method_name, event_dict):
-    group = event_dict.get("group", None)
-
-    if group:
-        event_dict["logger"] = group
-        del event_dict["group"]
-
-    return event_dict
 
 
 class PhoneWaveRenderer(structlog.dev.ConsoleRenderer):
@@ -102,20 +81,69 @@ logger_styles = PhoneWaveRenderer.get_default_level_styles()
 logger_styles["debug"] = MAGENTA
 logger_styles["info"] = CYAN
 
-
-structlog.configure(
-    cache_logger_on_first_use=True,
-    context_class=dict,
-    processors=[
-        filter_by_level(level=logging.DEBUG),
-        add_log_name,
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.UnicodeDecoder(),
-        PhoneWaveRenderer(pad_event=50, level_styles=logger_styles),
-    ],
+dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "colored": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "processors": [
+                    structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                    PhoneWaveRenderer(pad_event=50, level_styles=logger_styles),
+                ],
+                "foreign_pre_chain": [
+                    structlog.stdlib.add_log_level,
+                    structlog.processors.TimeStamper(fmt="%Y-%m-%d %H:%M:%S"),
+                    structlog.processors.StackInfoRenderer(),
+                    structlog.processors.UnicodeDecoder(),
+                ],
+            },
+            "json": {
+                "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+                "datefmt": "%Y-%m-%d %H:%M:%S",
+                "format": """
+                    asctime: %(asctime)s
+                    filename: %(filename)s
+                    funcName: %(funcName)s
+                    levelname: %(levelname)s
+                    levelno: %(levelno)s
+                    lineno: %(lineno)d
+                    message: %(message)s
+                    module: %(module)s
+                    msec: %(msecs)d
+                    name: %(name)s
+                    pathname: %(pathname)s
+                    process: %(process)d
+                    processName: %(processName)s
+                    relativeCreated: %(relativeCreated)d
+                    thread: %(thread)d
+                    threadName: %(threadName)s
+                    exc_info: %(exc_info)s
+                """,
+            },
+        },
+        "handlers": {
+            "console_output": {
+                "class": "logging.StreamHandler",
+                "formatter": "colored",
+            },
+            "file_output": {
+                "level": "DEBUG",
+                "class": "logging.handlers.RotatingFileHandler",
+                "formatter": "json",
+                "filename": "./app/logs/debug.log",
+                "backupCount": 2,
+            },
+        },
+        "loggers": {
+            "phonewave": {
+                "level": "DEBUG",
+                "handlers": ["file_output", "console_output"],
+                "propagate": False,
+            },
+        },
+    }
 )
 
-logger: structlog.stdlib.BoundLogger = structlog.get_logger()
+logger = logging.getLogger("phonewave")

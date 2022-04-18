@@ -3,18 +3,17 @@
 from typing import Any
 from redis import Redis as CacheServer
 
-from app.types.discord import DiscordMember, DiscordGuild, DiscordUser
 from app.config import config
-from app.utilities.logger import LEVEL_TRACE
-from app.utilities import logger
+from structlog import get_logger
 
 
-_cache: CacheServer = None
+logger = get_logger(group="cache")
 
 
 class RedisCache:
     """Handle the cache managment"""
 
+    _cache: CacheServer = None
     namespace = None
     expiry = None
 
@@ -24,54 +23,45 @@ class RedisCache:
         self.expiry = expiry
 
     def init(self):
-        _cache = CacheServer(
+        RedisCache._cache = CacheServer(
             host=config.REDIS_HOST,
             port=config.REDIS_PORT,
             db=config.REDIS_DB,
             decode_responses=True,
         )
 
-        logger.info("Attempting to connect to Redis...", group="cache")
+        logger.info("Attempting to connect to Redis...")
 
         try:
-            _cache.ping()
-            logger.info("Redis connected successfully.", group="cache")
+            RedisCache._cache.ping()
+            logger.info("Redis connected successfully.")
         except Exception as e:
-            logger.critical(e, group="cache")
-            logger.critical("Redis is not running. Please start it.", group="cache")
+            logger.critical(e)
+            logger.critical("Redis is not running. Please start it.")
             exit(1)
 
     def namespaced_key(self, key: str) -> str:
         """If a namespace is set, prefix the key with it"""
 
         if self.namespace is not None:
-            key = self.namespace + key
+            key = key + self.namespace
 
         return key
 
-    @classmethod
-    def get(cls, key: str, default_value: Any = None) -> Any:
+    def get(self, key: str, default_value: Any = None) -> Any:
         """Get a value from the cache"""
 
-        key = cls.namespaced_key(key)
-        value = _cache.get(key)
+        key = self.namespaced_key(key)
+        value = self._cache.get(key)
 
         if value is None and default_value is not None:
             value = default_value
 
         return value
 
-    @classmethod
-    def set(cls, key: str, value: Any, *, **kwargs) -> None:
+    def set(self, key: str, value: Any, **kwargs) -> None:
         """Set a value in the cache"""
-        expiry = kwargs.pop("ex", cls.expiry)
-        
-        key = cls.namespaced_key(key)
-        _cache.set(key, value, ex=expiry)
+        expiry = kwargs.pop("ex", self.expiry)
 
-
-_cache.set
-
-server_cache = RedisCache(":g:")
-user_cache = RedisCache(":u:")
-cache = RedisCache
+        key = self.namespaced_key(key)
+        self._cache.set(key, value, ex=expiry)

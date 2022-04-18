@@ -13,7 +13,7 @@ services:
             - dev_volume:/data/logs
             - ./.docker/mongo/mongod.conf:/etc/mongod.conf
         ports:
-            - "8000:27017"
+            - "8500:27017"
     redis_dev:
         image: redis:7.0-rc
         restart: unless-stopped
@@ -22,16 +22,16 @@ services:
             - dev_volume:/data
             - ./.docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
         ports:
-            - "8001:6379"
-    bot_dev:
-        build: .
-        restart: unless-stopped
-        environment:
-            - MONGO_URI="mongodb://phonewave:changeme@mongo_dev:27017/?authMechanism=DEFAULT"
-            - REDIS_HOST=redis_dev
-        depends_on:
-            - mongo_dev
-            - redis_dev
+            - "8501:6379"
+    # bot_dev:
+    #     build: .
+    #     restart: unless-stopped
+    #     environment:
+    #         - MONGO_URI="mongodb://phonewave:changeme@mongo_dev:27017/?authMechanism=DEFAULT"
+    #         - REDIS_HOST=redis_dev
+    #     depends_on:
+    #         - mongo_dev
+    #         - redis_dev
 volumes:
     dev_volume:
 
