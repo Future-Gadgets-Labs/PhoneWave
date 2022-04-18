@@ -4,7 +4,7 @@
 
 - Tell us what you are planning before you start.
 
-- Each new peice of code you add should be:
+- Each new piece of code you add should be:
     - documented, at least self explanatory.
     - and tests should be added, and must pass.
 
@@ -19,7 +19,7 @@
 
 # Getting Started
 
-This guide assumes you are already familair with Discord's bot API and already have a bot account
+This guide assumes you are already familiar with Discord's bot API and already have a bot account
 and already have some experience working with python.
 
 Requirements:
@@ -33,7 +33,7 @@ Requirements:
 
 Using pipenv ( recommended ):
 ```bash
-pipenv install
+pipenv install --dev
 --> pipenv will do all the magic
 ```
 
@@ -66,9 +66,26 @@ pipenv run bot
 > python3 ./main.py
 ```
 
-Then you shoud see something like this
+Then you should see something like this
 ```
 2069-04-05 09:55:55 | info     | Starting up...
 2069-04-05 09:55:55 | info     | Loaded 8 extentions
 2069-04-05 09:55:55 | info     | Logged in as [BotUsername #1234]
 ```
+
+### Testing before opening a Pull Request
+
+Currently, testing is done with pytest, and is simple:
+```bash
+> pytest
+```
+or
+```bash
+--> for "windows" users
+> python -m pytest
+
+--> for "linux" users
+> python3 -m pytest
+```
+
+Please make sure all tests succeed. Also try to get as many warnings down as possible, though this may not always be possible.

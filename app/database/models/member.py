@@ -13,6 +13,7 @@ class Member(Document):
     joined_at = DateTimeField()
     lab_member_number = IntField()
     is_active = BooleanField(default=True)
+    should_send_rankup_in_dms = BooleanField(default=False)  # Send rank up message in
     badges = EmbeddedDocumentListField(Badge, default=[])
 
     def __str__(self) -> str:

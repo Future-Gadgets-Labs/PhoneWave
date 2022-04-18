@@ -621,10 +621,6 @@
             "index": "pypi",
             "version": "==21.5.0"
         },
-        "testcord": {
-            "git": "https://github.com/KoalaBotUK/testcord",
-            "ref": "a6fa99559a888994060ad651af422437c2ad21de"
-        },
         "toml": {
             "hashes": [
                 "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b",
