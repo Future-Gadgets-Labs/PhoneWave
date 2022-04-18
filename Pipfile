@@ -10,7 +10,6 @@ pillow = "*"
 redis = "*"
 structlog = "*"
 python-dotenv = "*"
-tox = "*"
 python-json-logger = "*"
 pymongo = {extras = ["srv"], version = "*"}
 
@@ -18,8 +17,8 @@ pymongo = {extras = ["srv"], version = "*"}
 rich = "*"
 pytest = "*"
 black = "*"
-tox = "*"
 mongomock = "*"
+tox = "*"
 
 [requires]
 python_version = "3.10"
