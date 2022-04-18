@@ -76,6 +76,15 @@ Then you should see something like this
 ### Testing before opening a Pull Request
 
 Currently, testing is done with pytest, and is simple:
+First, start the virtual environment (if you haven't):
+```bash
+-->With pipenv
+> pipenv shell
+
+-->With pip
+> .venv\Scripts\activate
+```
+
 ```bash
 > pytest
 ```

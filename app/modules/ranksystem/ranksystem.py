@@ -10,8 +10,7 @@ from discord.ext.bridge import BridgeContext
 
 from app import client
 from app.types.discord import DiscordMember, DiscordChannelType, DiscordObject, DiscordTextChannel
-from app.database.models import Member
-from app.database.models import Rank
+from app.database.models import Member, Guild, Rank
 from app.config import config
 from app.cache import cache_get, cache_set
 from app.utilities import logger, defer, finders
@@ -58,10 +57,10 @@ class RankSystem(commands.Cog):
                         return  # Return to not call a second message
 
             # If we don't have a rank, or the rank has no message, default to this one:
-            if Member(gid=channel.guild.id, uid=member.id).should_send_rankup_in_dms:
+            if Guild(gid=channel.guild.id).should_send_rankup_in_dms:
                 await member.send(f"From {channel.guild.name}: Congrats on ranking up to level {level}!")
             else:
-                await member.send(f"Congrats on ranking up to level {level}!")
+                await channel.send(f"Congrats on ranking up to level {level}!")
 
     @commands.Cog.listener()
     async def on_message(self, message):

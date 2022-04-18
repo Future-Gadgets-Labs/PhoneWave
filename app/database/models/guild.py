@@ -9,6 +9,7 @@ class Guild(Document):
     prefix = StringField()
     roles = EmbeddedDocumentListField(Role, default=[])
     announcements = EmbeddedDocumentField(Announcements, default=Announcements())
+    should_send_rankup_in_dms = BooleanField(default=False)  # Send rank up message in
 
     def __str__(self) -> str:
         return f"Guild(gid={self.gid})"
