@@ -11,8 +11,8 @@ class Member(Document):
     xp = IntField(default=0)
     level = IntField(default=0)
     joined_at = DateTimeField()
+    left_at = DateTimeField()
     lab_member_number = IntField()
-    is_active = BooleanField(default=True)
     badges = EmbeddedDocumentListField(Badge, default=[])
 
     def __str__(self) -> str:

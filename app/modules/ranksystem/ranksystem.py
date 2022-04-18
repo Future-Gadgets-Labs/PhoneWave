@@ -9,9 +9,8 @@ from discord.ext import commands, bridge
 from discord.ext.bridge import BridgeContext
 
 from app import client
-from app.types.discord import DiscordMember, DiscordChannelType, DiscordObject
-from app.database.models import Member
-from app.database.models import Rank
+from app.types.discord import DiscordMember, DiscordChannelType, DiscordObject, DiscordTextChannel
+from app.database.models import Member, Guild, Rank
 from app.config import config
 from app.cache import cache_get, cache_set
 from app.utilities import logger, defer, finders
@@ -41,7 +40,7 @@ class RankSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def handle_rank_up(self, member: DiscordMember, level: int):
+    async def handle_rank_up(self, member: DiscordMember, channel: DiscordTextChannel, level: int):
         if member is not None:
             rank = Rank.get_rank(member.guild, level)
 
@@ -58,7 +57,10 @@ class RankSystem(commands.Cog):
                         return  # Return to not call a second message
 
             # If we don't have a rank, or the rank has no message, default to this one:
-            await member.send(f"From {member.guild.name}: Congrats on ranking up to level {level}!")
+            if Guild(gid=channel.guild.id).should_send_rankup_in_dms:
+                await member.send(f"From {channel.guild.name}: Congrats on ranking up to level {level}!")
+            else:
+                await channel.send(f"Congrats on ranking up to level {level}!")
 
     @commands.Cog.listener()
     async def on_message(self, message):
@@ -83,7 +85,7 @@ class RankSystem(commands.Cog):
             if member.xp >= required_xp:
                 member.xp -= required_xp
                 member.level += 1
-                await self.handle_rank_up(message.author, member.level)
+                await self.handle_rank_up(message.author, message.channel, member.level)
 
             member.save()
 
