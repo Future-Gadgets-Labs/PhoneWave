@@ -24,7 +24,7 @@ Building an image locally:
 
 1. Install Python 3.10+ - https://python.org/downloads/
 2. Install Pipenv (our dependency manager) with `pip install pipenv`
-3. Install dependencies with `pipenv install --deploy --dev`
+3. Install dependencies with `pipenv install --dev`
 4. Start the bot with `pipenv run bot`
 
 ### Updating MongoDB migrations

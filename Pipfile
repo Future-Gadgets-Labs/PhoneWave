@@ -6,17 +6,18 @@ name = "pypi"
 [packages]
 mongoengine = "*"
 py-cord = {git = "https://github.com/Pycord-Development/pycord"}
-rich = "*"
 pillow = "*"
-pytest = "*"
 redis = "*"
-black = "*"
 structlog = "*"
 python-dotenv = "*"
-tox = "*"
-mongomock = "*"
+pymongo = {extras = ["srv"], version = "*"}
 
 [dev-packages]
+rich = "*"
+pytest = "*"
+black = "*"
+tox = "*"
+mongomock = "*"
 
 [requires]
 python_version = "3.10"
