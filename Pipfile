@@ -6,19 +6,25 @@ name = "pypi"
 [packages]
 mongoengine = "*"
 py-cord = {git = "https://github.com/Pycord-Development/pycord"}
-rich = "*"
 pillow = "*"
-pytest = "*"
 redis = "*"
-black = "*"
 structlog = "*"
 python-dotenv = "*"
+<<<<<<< HEAD
 testcord = {ref = "feature/improve-coverage", git = "https://github.com/KoalaBotUK/testcord"}
 tox = "*"
 mongomock = "*"
 python-json-logger = "*"
+=======
+pymongo = {extras = ["srv"], version = "*"}
+>>>>>>> bf4c8bfa4a7e82e21d9ad0a8e55c2370d8f4eb26
 
 [dev-packages]
+rich = "*"
+pytest = "*"
+black = "*"
+tox = "*"
+mongomock = "*"
 
 [requires]
 python_version = "3.10"

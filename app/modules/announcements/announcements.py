@@ -20,7 +20,7 @@ class Announcements(commands.Cog):
         }
 
     def get_announcement_channel(self, guild: DiscordGuild) -> DiscordTextChannel | None:
-        channel_id_str = self.get_announcement_data(guild, "channel")
+        channel_id_str = self.get_announcement_data(guild, "channel_id")
         channel_id = int(channel_id_str) if channel_id_str else None
 
         if channel_id is not None:
@@ -32,23 +32,19 @@ class Announcements(commands.Cog):
 
     @staticmethod
     def get_announcement_data(guild: DiscordGuild, announcement_type: str, default: str = None) -> str | None:
-        cached = cache_get("announcements:" + announcement_type, guild=guild)
+        # Fetch from cache, if available
+        data = cache_get("announcements:" + announcement_type, guild=guild)
 
-        if not cached:
+        # Fetch from the database, if available
+        if data is None:
             db_guild = Guild.get_guild(guild.id, create=False)
             if db_guild is not None:
-                cache_set("announcements:channel", db_guild.announcements.channel_id, guild=guild)
+                cache_set("announcements:channel_id", db_guild.announcements.channel_id, guild=guild)
                 cache_set("announcements:welcome", db_guild.announcements.welcome, guild=guild)
                 cache_set("announcements:farewell", db_guild.announcements.farewell, guild=guild)
+                data = cache_get("announcements:" + announcement_type, guild=guild)
 
-                if announcement_type == "channel":
-                    cached = db_guild.announcements.channel_id
-                elif announcement_type == "welcome":
-                    cached = db_guild.announcements.welcome
-                elif announcement_type == "farewell":
-                    cached = db_guild.announcements.farewell
-
-        return cached or default
+        return data or default
 
     def get_message_template(self, guild: DiscordGuild, announcement_type: str):
         default_template = self.default_message_templates.get(announcement_type)
@@ -56,9 +52,9 @@ class Announcements(commands.Cog):
 
     @staticmethod
     def prepare_message(template: str, member: DiscordMember, db_member: Member):
-        message = template.replace("{number}", f"{db_member.lab_member_number:03d}") 
-        message = message.replace("{name}", member.mention)
-        return message
+        return template\
+            .replace("{number}", f"{db_member.lab_member_number:03d}")\
+            .replace("{name}", member.mention)
 
     async def send_announcement(self, message: str, guild: DiscordGuild):
         channel = self.get_announcement_channel(guild)
