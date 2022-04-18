@@ -10,14 +10,10 @@ pillow = "*"
 redis = "*"
 structlog = "*"
 python-dotenv = "*"
-<<<<<<< HEAD
 testcord = {ref = "feature/improve-coverage", git = "https://github.com/KoalaBotUK/testcord"}
 tox = "*"
-mongomock = "*"
 python-json-logger = "*"
-=======
 pymongo = {extras = ["srv"], version = "*"}
->>>>>>> bf4c8bfa4a7e82e21d9ad0a8e55c2370d8f4eb26
 
 [dev-packages]
 rich = "*"
