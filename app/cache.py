@@ -8,14 +8,20 @@ from .config import config
 from .utilities.logger import LEVEL_TRACE
 from app.utilities import logger
 
-cache = CacheServer(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
+cache = None
 
 REDIS_PORT = config.REDIS_PORT
 REDIS_HOST = config.REDIS_HOST
 REDIS_DB = config.REDIS_DB
 
+def init(is_testing: bool):
+    global cache
+    if is_testing:
+        from vendor.mockredis import MockServer as MockCache  # In here since we won't be in testing in public
+        cache = MockCache(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
+    else:
+        cache = CacheServer(host=config.REDIS_HOST, port=config.REDIS_PORT, db=config.REDIS_DB, decode_responses=True)
 
-def check():
     try:
         cache.ping()
         logger.info("Redis connected successfully.")
@@ -23,7 +29,6 @@ def check():
         logger.critical(e)
         logger.critical("Redis is not running. Please start it.")
         exit(1)
-
 
 def format_key(key: str, guild: DiscordGuild = None, user: Union[DiscordMember, DiscordUser] = None) -> str:
     if guild is not None:

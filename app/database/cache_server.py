@@ -13,7 +13,7 @@ logger = get_logger(group="cache")
 class RedisCache:
     """Handle the cache managment"""
 
-    _cache: CacheServer = None
+    _cache:CacheServer = None
     namespace = None
     expiry = None
 
@@ -22,13 +22,23 @@ class RedisCache:
         self.namespace = namespace
         self.expiry = expiry
 
-    def init(self):
-        RedisCache._cache = CacheServer(
-            host=config.REDIS_HOST,
-            port=config.REDIS_PORT,
-            db=config.REDIS_DB,
-            decode_responses=True,
-        )
+    def init(self, is_testing: bool):
+        if is_testing:
+            from vendor.mockredis import MockServer  # In here since we won't be in testing in public
+
+            RedisCache._cache = MockServer(
+                host=config.REDIS_HOST,
+                port=config.REDIS_PORT,
+                db=config.REDIS_DB,
+                decode_responses=True,
+            )
+        else:
+            RedisCache._cache = CacheServer(
+                host=config.REDIS_HOST,
+                port=config.REDIS_PORT,
+                db=config.REDIS_DB,
+                decode_responses=True,
+            )
 
         logger.info("Attempting to connect to Redis...")
 

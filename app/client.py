@@ -3,7 +3,7 @@ from discord.ext import bridge
 from discord.message import Message
 
 from app import database
-from app.cache import cache_get, cache_set, check as cache_check
+from app.cache import cache_get, cache_set, init as cache_init
 from app.config import config
 from app.database.models import Guild
 from app.exceptions.bad_config import BadConfig
@@ -25,7 +25,7 @@ class PhoneWave(bridge.Bot):
 
         # initialize MongoDB and Redis connections
         database.init()
-        cache_check()
+        cache_init(is_testing=(kwargs.get("is_testing") or False))
 
         # autoload the commands, events & the modules
         handlers.load_modules(self)
