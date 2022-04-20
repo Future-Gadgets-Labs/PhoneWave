@@ -13,8 +13,9 @@ class Hiddenprofilecard(commands.Cog):
 
     @commands.command()
     #async def hiddenprofilecard(self, ctx: Context):
-    async def hpc(self, ctx: Context):
+    async def hpc(self, ctx: Context, member: discord.Member = None):
         logger.info("Received 'Hiddenprofilecard' command...")
+        print(ctx.message.author.avatar.url)
         return await ctx.send("Hiddenprofilecard hello")
 
 
