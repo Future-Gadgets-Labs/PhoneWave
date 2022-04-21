@@ -3,18 +3,20 @@ import os
 import PIL
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 from pathlib import Path
+import requests
+from io import BytesIO
 
 # fixing issues regarding current working directory
 if Path(Path.cwd()).stem != "drawing":
     from .utils import *
+    abspath = os.path.abspath(__file__)
+    ipath = os.path.dirname(abspath) # import path
+    os.chdir(ipath)
 else:
     from utils import *
 
-abspath = os.path.abspath(__file__)
-ipath = os.path.dirname(abspath) # import path
-os.chdir(ipath)
 
-def drawProfileCard():
+def drawProfileCard(avatar_url):
 
     #####################
     #  SETTING OFFSETS  #
@@ -35,7 +37,7 @@ def drawProfileCard():
     #########################
 
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 16)
-    pfp_original = Image.open('pfp.png')
+    pfp_original = Image.open( requests.get(avatar_url, stream=True).raw )
     server_original = Image.open('server_icon.png')
     full_background = PIL.Image.new(mode="RGBA", size=(437, 545))
     background = PIL.Image.new(mode="RGBA", size=(381, 513), color=(50, 100, 150, 255))
@@ -194,7 +196,13 @@ def drawProfileCard():
     ##########################################
 
     full_background.save("final_output.png")
+    profile_card = full_background
 
-    return "uwu"
+    # converting final image to bytes
+    bytes = BytesIO()
+    profile_card.save(bytes, format="PNG")
+    bytes.seek(0)
 
-drawProfileCard()
+    return bytes
+
+#drawProfileCard()
