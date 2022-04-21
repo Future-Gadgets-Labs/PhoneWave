@@ -3,6 +3,9 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from app.utilities import logger
+from app.utilities.drawing import master
+
+print(master.drawProfileCard())
 
 ContextType = commands.Context
 

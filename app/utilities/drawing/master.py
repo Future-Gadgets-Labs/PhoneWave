@@ -1,9 +1,21 @@
 import sys
+import os
 import PIL
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
-from utils import *
+from pathlib import Path
+
+# fixing issues regarding current working directory
+if Path(Path.cwd()).stem != "drawing":
+    from .utils import *
+else:
+    from utils import *
+
+abspath = os.path.abspath(__file__)
+ipath = os.path.dirname(abspath) # import path
+os.chdir(ipath)
 
 def drawProfileCard():
+
     #####################
     #  SETTING OFFSETS  #
     #####################
@@ -21,6 +33,7 @@ def drawProfileCard():
     #########################
     #  creating sub images  #
     #########################
+
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 16)
     pfp_original = Image.open('pfp.png')
     server_original = Image.open('server_icon.png')
@@ -180,7 +193,8 @@ def drawProfileCard():
     full_background.paste(background, background_offset, background)
     ##########################################
 
-
     full_background.save("final_output.png")
+
+    return "uwu"
 
 drawProfileCard()
