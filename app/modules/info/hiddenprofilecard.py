@@ -9,6 +9,10 @@ import app.utilities.drawing.master as drawing
 ContextType = commands.Context
 
 
+def profileCardFromMember(member):
+    print(member)
+    return discord.File( drawing.drawProfileCard(member.avatar.url), filename="profile_card.png" )
+
 class Hiddenprofilecard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -21,11 +25,9 @@ class Hiddenprofilecard(commands.Cog):
         # checking if any mentions were sent
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
-                profile_card = discord.File( drawing.drawProfileCard(mention.avatar.url), filename="profile_card.png" )
-                await ctx.send(file=profile_card)
+                await ctx.send(file = profileCardFromMember(mention))
         else:
-            profile_card = discord.File( drawing.drawProfileCard(ctx.message.author.avatar.url), filename="profile_card.png" )
-            await ctx.send(file=profile_card)
+            await ctx.send(file = profileCardFromMember(ctx.message.author))
         return True
 
 
