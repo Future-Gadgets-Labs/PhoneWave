@@ -10,7 +10,12 @@ ContextType = commands.Context
 
 
 def profileCardFromMember(member):
-    print(member)
+
+    # getting user's server specific nickname (if it's not set, then just getting his general discord name)
+    nickname = member.nick
+    if not nickname:
+        nickname = member.name
+
     return discord.File( drawing.drawProfileCard(member.avatar.url), filename="profile_card.png" )
 
 class Hiddenprofilecard(commands.Cog):
