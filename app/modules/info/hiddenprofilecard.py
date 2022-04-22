@@ -19,7 +19,8 @@ def profileCardFromMember(member):
     return discord.File(
         drawing.drawProfileCard(
             member.avatar.url,
-            nickname
+            nickname,
+            member.discriminator
         ), filename="profile_card.png" )
 
 class Hiddenprofilecard(commands.Cog):

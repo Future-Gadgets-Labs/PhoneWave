@@ -16,7 +16,7 @@ else:
     from utils import *
 
 
-def drawProfileCard(avatar_url, nickname):
+def drawProfileCard(avatar_url, nickname, discriminator):
 
     #####################
     #  SETTING OFFSETS  #
@@ -147,7 +147,7 @@ def drawProfileCard(avatar_url, nickname):
     # Discord tag and "Messages Sent" text
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 20)
     font.set_variation_by_name('Regular')
-    draw.text((148, 91),"#0395",(255,255,255),font=font)
+    draw.text((148, 91), "#" + str(discriminator),(255,255,255),font=font)
     draw.text((31, 247),"Messages Sent",(255,255,255),font=font)
 
     # Messages count
