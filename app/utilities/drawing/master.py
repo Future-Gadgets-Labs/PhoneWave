@@ -16,7 +16,7 @@ else:
     from utils import *
 
 
-def drawProfileCard(avatar_url):
+def drawProfileCard(avatar_url, nickname):
 
     #####################
     #  SETTING OFFSETS  #
@@ -137,7 +137,7 @@ def drawProfileCard(avatar_url):
     # Nickname
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 32)
     font.set_variation_by_name('ExtraBold')
-    draw.text((148, 45),"Lipton",(255,255,255),font=font)
+    draw.text((148, 45), nickname,(255,255,255),font=font)
 
     # Discord tag and "Messages Sent" text
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 20)

@@ -16,7 +16,11 @@ def profileCardFromMember(member):
     if not nickname:
         nickname = member.name
 
-    return discord.File( drawing.drawProfileCard(member.avatar.url), filename="profile_card.png" )
+    return discord.File(
+        drawing.drawProfileCard(
+            member.avatar.url,
+            nickname
+        ), filename="profile_card.png" )
 
 class Hiddenprofilecard(commands.Cog):
     def __init__(self, bot):
