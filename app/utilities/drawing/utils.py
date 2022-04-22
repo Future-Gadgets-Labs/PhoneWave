@@ -4,7 +4,6 @@ from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 from . import constants
 solid_fill =  (50,50,50,255)
 
-
 def drawText(text, size, location, weight, draw, color=(255,255,255)):
     font_path = constants.default_font
     font = ImageFont.truetype(font_path, size)
