@@ -6,18 +6,17 @@ from pathlib import Path
 import requests
 from io import BytesIO
 
-# fixing issues regarding current working directory
-if Path(Path.cwd()).stem != "drawing":
-    from .utils import *
-    abspath = os.path.abspath(__file__)
-    ipath = os.path.dirname(abspath) # import path
-    os.chdir(ipath)
-else:
-    from utils import *
+from .utils import *
+from . import constants
+
+# changing import path
+abspath = os.path.abspath(__file__)
+ipath = os.path.dirname(abspath)
+os.chdir(ipath)
+
 
 
 def drawProfileCard(avatar_url, nickname, discriminator, labmem_number):
-
     #####################
     #  SETTING OFFSETS  #
     #####################

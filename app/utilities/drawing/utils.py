@@ -1,11 +1,12 @@
 import sys
 import PIL
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
+from . import constants
 solid_fill =  (50,50,50,255)
 
 
 def drawText(text, size, location, weight, draw, color=(255,255,255)):
-    font_path = "fonts/Nunito-VariableFont_wght.ttf"
+    font_path = constants.default_font
     font = ImageFont.truetype(font_path, size)
     font.set_variation_by_name(weight)
     draw.text(location, text, color, font=font)
