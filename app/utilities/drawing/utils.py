@@ -1,8 +1,15 @@
 import sys
 import PIL
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
-
 solid_fill =  (50,50,50,255)
+
+
+def drawText(text, size, location, weight, draw, color=(255,255,255)):
+    font_path = "fonts/Nunito-VariableFont_wght.ttf"
+    font = ImageFont.truetype(font_path, size)
+    font.set_variation_by_name(weight)
+    draw.text(location, text, color, font=font)
+
 def create_rounded_rectangle_mask(rectangle, radius):
     # create mask image. all pixels set to translucent
     i = Image.new("RGBA",rectangle.size,(0,0,0,0))

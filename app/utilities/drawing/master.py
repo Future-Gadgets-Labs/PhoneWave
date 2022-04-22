@@ -31,11 +31,7 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number):
     server_circle_offset = (159, 122)
     ##########################################
 
-
-    #########################
-    #  creating sub images  #
-    #########################
-
+    # general setup of images
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 16)
     pfp_original = Image.open( requests.get(avatar_url, stream=True).raw )
     server_original = Image.open('server_icon.png')
@@ -131,46 +127,25 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number):
     #################
     # DRAWING TEXTS #
     #################
-
-    draw = ImageDraw.Draw(background)
-
-    # Nickname
-
     # checking if nickname provided is longer than 9, if so then it needs to be cut and 3 dots need to be added
     if len(nickname) > 9:
         nickname = nickname[0:9] + "..."
 
-    font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 32)
-    font.set_variation_by_name('ExtraBold')
-    draw.text((148, 45), nickname,(255,255,255),font=font)
+    draw = ImageDraw.Draw(background)
 
-    # Discord tag, labmem_number and "Messages Sent" text
-    font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 20)
-    font.set_variation_by_name('Regular')
-    draw.text((148, 91), "#" + str(discriminator),(255,255,255),font=font)
-    draw.text((230, 91), str(labmem_number),(255,255,255),font=font)
-    draw.text((216, 90), "|",(255,255,255),font=font)
-    draw.text((31, 247),"Messages Sent",(255,255,255),font=font)
+    drawText(nickname, 32, (148, 45), 'ExtraBold', draw)
+    drawText("#" + str(discriminator), 20, (148, 91), 'Regular', draw)
+    drawText(str(labmem_number), 20, (230, 91), 'Regular', draw)
+    drawText("|", 20, (216, 90), 'Regular', draw)
+    drawText("Messages Sent", 20, (31, 247), 'Regular', draw)
+    drawText("2036", 24, (31, 218), 'ExtraBold', draw)
+    drawText("Badges accquired", 12, (31, 419), 'Bold', draw)
+    drawText("Level", 12, (31, 279), 'Regular', draw)
+    drawText("XP", 12, (31, 311), 'Regular', draw)
+    drawText("Rank", 12, (31, 343), 'Regular', draw)
+    drawText("Honor Points", 12, (31, 375), 'Regular', draw)
 
-    # Messages count
-    font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 24)
-    font.set_variation_by_name('ExtraBold')
-    draw.text((31, 218),"2036",(255,255,255),font=font)
-
-    # Badges text
-    font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 12)
-    font.set_variation_by_name('Bold')
-    draw.text((31, 419),"Badges accquired",(255,255,255),font=font)
-
-    # progress bar captions
-    font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 12)
-    font.set_variation_by_name('Regular')
-    draw.text((31, 279),"Level",(255,255,255),font=font)
-    draw.text((31, 311),"XP",(255,255,255),font=font)
-    draw.text((31, 343),"Rank",(255,255,255),font=font)
-    draw.text((31, 375),"Honor Points",(255,255,255),font=font)
-
-    # progress bar values
+    # progress bar values (I don't use drawText, because it's simpler to handle anhors and aligns just this way)
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 12)
     font.set_variation_by_name('ExtraBold')
     draw.text((278, 279),"80",font=font, align="right", anchor="rt")
@@ -178,38 +153,25 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number):
     draw.text((278, 343),"#2",font=font, align="right", anchor="rt")
     draw.text((278, 375),"12K",font=font, align="right", anchor="rt")
 
-
-    #########################
-    # DRAWING PROGRESS BARS #
-    #########################
-
-
+    # DRAWING PROGRESS BARS
     progress_bar_level = createProgressBar(230, background.size, (31, 295))
     progress_bar_xp = createProgressBar(180, background.size, (31, 327))
     progress_bar_rank = createProgressBar(200, background.size, (31, 359))
     progress_bar_honorpoints = createProgressBar(160, background.size, (31, 391))
-
-
     background = Image.alpha_composite(background, progress_bar_level)
     background = Image.alpha_composite(background, progress_bar_xp)
     background = Image.alpha_composite(background, progress_bar_rank)
     background = Image.alpha_composite(background, progress_bar_honorpoints)
 
 
-    #########################################
-    #  merging components into final image  #
-    #########################################
+    # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     full_background.paste(background, background_offset, background)
-    ##########################################
-
-    #full_background.save("final_output.png")
     profile_card = full_background
+    #profile_card.save("final_output.png")
 
-    # converting final image to bytes
+    # converting final image to bytes (so it can be used to create discord file upload)
     bytes = BytesIO()
     profile_card.save(bytes, format="PNG")
     bytes.seek(0)
 
     return bytes
-
-#drawProfileCard()
