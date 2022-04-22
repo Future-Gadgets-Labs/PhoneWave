@@ -22,10 +22,11 @@ class Hiddenprofilecard(commands.Cog):
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
                 profile_card = discord.File( drawing.drawProfileCard(mention.avatar.url), filename="profile_card.png" )
-                await ctx.send("SEX", file=profile_card)
-            return True
+                await ctx.send(file=profile_card)
         else:
-            return await ctx.send(ctx.message.author.avatar.url)
+            profile_card = discord.File( drawing.drawProfileCard(ctx.message.author.avatar.url), filename="profile_card.png" )
+            await ctx.send(file=profile_card)
+        return True
 
 
 def setup(bot):
