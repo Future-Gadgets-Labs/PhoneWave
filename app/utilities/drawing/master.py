@@ -135,6 +135,11 @@ def drawProfileCard(avatar_url, nickname):
     draw = ImageDraw.Draw(background)
 
     # Nickname
+
+    # checking if nickname provided is longer than 9, if so then it needs to be cut and 3 dots need to be added
+    if len(nickname) > 9:
+        nickname = nickname[0:9] + "..."
+
     font = ImageFont.truetype("fonts/Nunito-VariableFont_wght.ttf", 32)
     font.set_variation_by_name('ExtraBold')
     draw.text((148, 45), nickname,(255,255,255),font=font)
