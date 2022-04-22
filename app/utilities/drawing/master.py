@@ -200,7 +200,7 @@ def drawProfileCard(avatar_url, nickname, discriminator):
     full_background.paste(background, background_offset, background)
     ##########################################
 
-    full_background.save("final_output.png")
+    #full_background.save("final_output.png")
     profile_card = full_background
 
     # converting final image to bytes
