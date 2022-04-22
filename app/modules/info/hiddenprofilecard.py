@@ -20,7 +20,8 @@ def profileCardFromMember(member):
         drawing.drawProfileCard(
             member.avatar.url,
             nickname,
-            member.discriminator
+            member.discriminator,
+            222
         ), filename="profile_card.png" )
 
 class Hiddenprofilecard(commands.Cog):
