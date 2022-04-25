@@ -44,8 +44,8 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     cropped_img = background.crop((
         constants.blurry_background_offset[0],
         constants.blurry_background_offset[1],
-        constants.blurry_region_size[0],
-        constants.blurry_region_size[1]
+        constants.blurry_region_size[0]+constants.blurry_background_offset[0],
+        constants.blurry_region_size[1]+constants.blurry_background_offset[1]
     ))
 
     blurred_img = cropped_img.filter(ImageFilter.GaussianBlur(10),).convert("RGBA")
