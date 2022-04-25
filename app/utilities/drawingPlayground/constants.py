@@ -9,6 +9,7 @@ blurry_region_size = (395, 380)
 black_region_1_size = (371, 118)
 black_region_2_size = (371, 88)
 badge_size = (41,39)
+pfp_circle_size = (100,100)
 
 # OFFSETS
 blurry_background_offset = (12,12)
@@ -16,6 +17,7 @@ black_region_1_offset = (24, 164)
 black_region_2_offset = (24, 292)
 first_badge_offset = (36, 329)
 badges_spacing = 10
+pfp_circle_offset = (295,39)
 
 # COLORS
 

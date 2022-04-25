@@ -44,7 +44,7 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     ))
 
     blurred_img = cropped_img.filter(ImageFilter.GaussianBlur(25)).convert("RGBA")
-    alpha_bg = PIL.Image.new(mode="RGBA", size=blurred_img.size, color=(18, 17, 21, 150))
+    alpha_bg = PIL.Image.new(mode="RGBA", size=blurred_img.size, color=(18, 17, 21, 127))
     blurred_img = Image.alpha_composite(blurred_img, alpha_bg)
 
 
@@ -71,15 +71,27 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
         badge_offset = (constants.first_badge_offset[0] + additional_x_offset, constants.first_badge_offset[1])
         background = drawBadgeBackgroundOnBackground(badge_offset, background)
 
+    # creating pfp circle https://stackoverflow.com/a/22336005/11273040 and pasting it on background
+    bigsize = (pfp_original.size[0] * 2, pfp_original.size[1] * 2)
+    mask = Image.new('L', bigsize, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + bigsize, fill=255)
+    mask = mask.resize(constants.pfp_circle_size, Image.Resampling.LANCZOS)
+
+    pfp_circle = ImageOps.fit(pfp_original, mask.size, centering=(0.5, 0.5))
+    pfp_circle.putalpha(mask)
+
+    alpha_bg = PIL.Image.new(mode="RGBA", size=background.size, color=(0, 0, 0, 0))
+    alpha_bg.paste(pfp_circle, constants.pfp_circle_offset)
+
+    background = Image.alpha_composite(background, alpha_bg)
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background
     profile_card.save("final_output.png")
 
-
 drawProfileCard(
-    #"https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512",
-    "https://s3-alpha-sig.figma.com/img/fe2e/e3e4/1599024272626d5b9d3e84540cc950fc?Expires=1652054400&Signature=Zy8rd2lO1m0tlGxpHJoZm8SmJOd1I09aSzzDu9MBXWUL37Pe50HGebqr~17WpNHtJlWo60vcMbRSwDCF7zRhIfF5d8Ax5bRAElanwj4guzxMe9jfvaopiF8Ad1RKTkaMQzf06VX3rvQExUENDNZvJDNcxaPzksWjnPQCiqbe14-S3oO5rtjABMI8YBhPvBuUi9auaVFISvJtC9x05skwh~kdT-uKok7LIgIVIz84ej6gzgIcUl45BdPAcAXLY2Rz03QuXld7kn-6cvARPozPS2R8WzGm0aJqfTx936QD5HT~gT4zPLkQ-pd9uNS8WDHcFq6CwbxFGbJhfgq93WBJRg__&Key-Pair-Id=APKAINTVSUGEWH5XD5UA",
+    "https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512",
     "FreshTeaBagsByLipton",
     2036,
     222,
