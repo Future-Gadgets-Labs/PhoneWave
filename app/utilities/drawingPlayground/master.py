@@ -40,6 +40,20 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     # making background rounded rectangle (according to masks/background.png)
     background = applyAlphaWithMask(background, 'masks/background.png')
 
+    # adding blurry region in the middle of background
+    cropped_img = background.crop((
+        constants.blurry_background_offset[0],
+        constants.blurry_background_offset[1],
+        constants.blurry_region_size[0],
+        constants.blurry_region_size[1]
+    ))
+
+    blurred_img = cropped_img.filter(ImageFilter.GaussianBlur(10),).convert("RGBA")
+    alpha_bg = PIL.Image.new(mode="RGBA", size=blurred_img.size, color=(18, 17, 21, 127))
+    blurred_img = Image.alpha_composite(blurred_img, alpha_bg)
+
+    background.paste(blurred_img, (constants.blurry_background_offset[0], constants.blurry_background_offset[1]), create_rounded_rectangle_mask(cropped_img, constants.blurry_region_radius))
+
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background
