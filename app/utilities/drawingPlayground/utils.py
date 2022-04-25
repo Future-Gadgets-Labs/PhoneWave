@@ -73,10 +73,12 @@ def ReduceOpacity(im, opacity):
     return im
 
 
-def createProgressBar(target_size, background_size, location):
+def createProgressBar(progress_percent, target_size, background_size, location):
 
-    target_progressbar_width =  130
-    
+    # getting how much progress user has
+    scale =  target_size[0] / 100
+    target_progressbar_width = int(scale * progress_percent)
+
 
     # setting progressbar_background
     progressbar_background = Image.open('masks/progressbar_background.png')

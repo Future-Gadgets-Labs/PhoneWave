@@ -86,7 +86,7 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     background = Image.alpha_composite(background, alpha_bg)
 
     # progress bar
-    progress_bar_xp = createProgressBar(constants.xp_bar_size, background.size, constants.xp_bar_offset)
+    progress_bar_xp = createProgressBar(100, constants.xp_bar_size, background.size, constants.xp_bar_offset)
     background = Image.alpha_composite(background, progress_bar_xp)
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
