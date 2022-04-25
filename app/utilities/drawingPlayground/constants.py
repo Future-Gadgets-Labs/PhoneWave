@@ -14,6 +14,8 @@ badge_size = (41,39)
 blurry_background_offset = (12,12)
 black_region_1_offset = (24, 164)
 black_region_2_offset = (24, 292)
+first_badge_offset = (36, 329)
+badges_spacing = 10
 
 # COLORS
 

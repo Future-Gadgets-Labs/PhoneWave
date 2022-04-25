@@ -6,8 +6,8 @@ solid_fill =  (50,50,50,255)
 
 def drawBadgeBackgroundOnBackground(offset, background):
     black_region = PIL.Image.new(mode="RGBA", size=constants.badge_size, color=(0, 0, 0, 25))
-
-    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 12))
+    print(offset)
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 8))
     return background
 
 
