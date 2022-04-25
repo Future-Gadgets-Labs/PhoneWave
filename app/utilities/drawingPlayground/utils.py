@@ -4,6 +4,20 @@ from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import constants
 solid_fill =  (50,50,50,255)
 
+def createSemiTransparentBlackRegionOnBackground(size, offset, background):
+    cropped_img = background.crop((
+        offset[0],
+        offset[1],
+        size[0]+offset[0],
+        size[1]+offset[1]
+    ))
+    #enhancer = ImageEnhance.Brightness(cropped_img)
+    #cropped_img = enhancer.enhance(0.3)
+    alpha_bg = PIL.Image.new(mode="RGBA", size=cropped_img.size, color=(18, 17, 21, 127))
+    black_region = Image.alpha_composite(cropped_img, alpha_bg)
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 12))
+    return background
+
 def applyAlphaWithMask(image, mask_path):
     mask = Image.open(mask_path).convert('L')
     output = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
