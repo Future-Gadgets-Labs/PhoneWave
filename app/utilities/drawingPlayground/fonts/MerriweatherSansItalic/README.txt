@@ -1,34 +1,30 @@
-Nunito Variable Font
-====================
+Merriweather Sans Variable Font
+===============================
 
-This download contains Nunito as both variable fonts and static fonts.
+This download contains Merriweather Sans as both variable fonts and static fonts.
 
-Nunito is a variable font with this axis:
+Merriweather Sans is a variable font with this axis:
   wght
 
 This means all the styles are contained in these files:
-  Nunito-VariableFont_wght.ttf
-  Nunito-Italic-VariableFont_wght.ttf
+  MerriweatherSans-VariableFont_wght.ttf
+  MerriweatherSans-Italic-VariableFont_wght.ttf
 
 If your app fully supports variable fonts, you can now pick intermediate styles
 that aren’t available as static fonts. Not all apps support variable fonts, and
-in those cases you can use the static font files for Nunito:
-  static/Nunito-ExtraLight.ttf
-  static/Nunito-Light.ttf
-  static/Nunito-Regular.ttf
-  static/Nunito-Medium.ttf
-  static/Nunito-SemiBold.ttf
-  static/Nunito-Bold.ttf
-  static/Nunito-ExtraBold.ttf
-  static/Nunito-Black.ttf
-  static/Nunito-ExtraLightItalic.ttf
-  static/Nunito-LightItalic.ttf
-  static/Nunito-Italic.ttf
-  static/Nunito-MediumItalic.ttf
-  static/Nunito-SemiBoldItalic.ttf
-  static/Nunito-BoldItalic.ttf
-  static/Nunito-ExtraBoldItalic.ttf
-  static/Nunito-BlackItalic.ttf
+in those cases you can use the static font files for Merriweather Sans:
+  static/MerriweatherSans-Light.ttf
+  static/MerriweatherSans-Regular.ttf
+  static/MerriweatherSans-Medium.ttf
+  static/MerriweatherSans-SemiBold.ttf
+  static/MerriweatherSans-Bold.ttf
+  static/MerriweatherSans-ExtraBold.ttf
+  static/MerriweatherSans-LightItalic.ttf
+  static/MerriweatherSans-Italic.ttf
+  static/MerriweatherSans-MediumItalic.ttf
+  static/MerriweatherSans-SemiBoldItalic.ttf
+  static/MerriweatherSans-BoldItalic.ttf
+  static/MerriweatherSans-ExtraBoldItalic.ttf
 
 Get started
 -----------

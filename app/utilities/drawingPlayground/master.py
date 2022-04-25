@@ -89,6 +89,17 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     progress_bar_xp = createProgressBar(100, constants.xp_bar_size, background.size, constants.xp_bar_offset)
     background = Image.alpha_composite(background, progress_bar_xp)
 
+
+    # drawing texts
+    draw = ImageDraw.Draw(background)
+
+    # checking if nickname provided is longer than 9, if so then it needs to be cut and 3 dots need to be added
+    if len(nickname) > 12:
+        nickname = nickname[0:12] + "..."
+
+    drawText(nickname, 32, (24, 56), 'ExtraBold', draw)
+
+
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background
     profile_card.save("final_output.png")

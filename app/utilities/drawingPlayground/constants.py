@@ -28,4 +28,4 @@ xp_bar_offset = (100, 195)
 server_icon_path = 'server_icon.png'
 
 # FONTS
-default_font = "fonts/Nunito-VariableFont_wght.ttf"
+default_font = "fonts/MerriweatherSansItalic/MerriweatherSans-VariableFont_wght.ttf"
