@@ -24,6 +24,19 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
         color=(0, 0, 0, 255)
     )
 
+    # scaling pfp down to around background_dimensions-ish dimensions, without streching (with maintaing aspect ratio)
+    pfp_scaled = pfp_original
+    base_width = constants.background_dimensions[0]
+    hpercent = (base_width/float(pfp_scaled.size[1]))
+    wsize = int((float(pfp_scaled.size[0])*float(hpercent)))
+    pfp_scaled = pfp_scaled.resize((base_width,wsize), Image.Resampling.LANCZOS) # after this step pfp_scaled will be 513x513 square
+    # putting scaled pfp on background
+    background = pfp_scaled.crop((
+        0, 0,
+        constants.background_dimensions[0],
+        constants.background_dimensions[1]
+    ))
+
     # making background rounded rectangle (according to masks/background.png)
     background = applyAlphaWithMask(background, 'masks/background.png')
 
