@@ -15,7 +15,7 @@ ipath = os.path.dirname(abspath)
 os.chdir(ipath)
 
 
-def drawProfileCard(avatar_url, nickname, discriminator, labmem_number):
+def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, rank, messages_sent, badges_list):
     # general setup of images
     pfp_original = Image.open( requests.get(avatar_url, stream=True).raw )
     server_original = Image.open(constants.server_icon_path)

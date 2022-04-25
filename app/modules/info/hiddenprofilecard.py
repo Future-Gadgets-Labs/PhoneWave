@@ -21,7 +21,11 @@ def profileCardFromMember(member):
             member.avatar.url,
             nickname,
             member.discriminator,
-            222
+            222, # labmem number
+            58, # level
+            1, # rank
+            235000, # messages sent
+            ['operation_elysian_veteran', 'daru69']
         ), filename="profile_card.png" )
 
 class Hiddenprofilecard(commands.Cog):
