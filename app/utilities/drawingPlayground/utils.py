@@ -4,6 +4,12 @@ from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import constants
 solid_fill =  (50,50,50,255)
 
+def applyAlphaWithMask(image, mask_path):
+    mask = Image.open(mask_path).convert('L')
+    output = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
+    output.putalpha(mask)
+    return output
+
 def drawText(text, size, location, weight, draw, color=(255,255,255)):
     font_path = constants.default_font
     font = ImageFont.truetype(font_path, size)

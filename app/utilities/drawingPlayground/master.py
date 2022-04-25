@@ -16,13 +16,16 @@ os.chdir(ipath)
 
 
 def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, rank, messages_sent, badges_list):
-    # getting images that can be ever needed
+    # getting base images
     pfp_original = Image.open( requests.get(avatar_url, stream=True).raw )
     background = PIL.Image.new(
         mode="RGBA",
         size=constants.background_dimensions,
         color=(0, 0, 0, 255)
     )
+
+    # making background rounded rectangle (according to masks/background.png)
+    background = applyAlphaWithMask(background, 'masks/background.png')
 
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
