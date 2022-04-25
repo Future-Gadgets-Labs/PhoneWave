@@ -76,15 +76,18 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     mask = Image.new('L', bigsize, 0)
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0) + bigsize, fill=255)
-    mask = mask.resize(constants.pfp_circle_size, Image.Resampling.LANCZOS)
 
+    mask = mask.resize(constants.pfp_circle_size, Image.Resampling.LANCZOS)
     pfp_circle = ImageOps.fit(pfp_original, mask.size, centering=(0.5, 0.5))
     pfp_circle.putalpha(mask)
 
     alpha_bg = PIL.Image.new(mode="RGBA", size=background.size, color=(0, 0, 0, 0))
     alpha_bg.paste(pfp_circle, constants.pfp_circle_offset)
-
     background = Image.alpha_composite(background, alpha_bg)
+
+    # progress bar
+    progress_bar_xp = createProgressBar(constants.xp_bar_size, background.size, constants.xp_bar_offset)
+    background = Image.alpha_composite(background, progress_bar_xp)
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background
