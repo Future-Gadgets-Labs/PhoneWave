@@ -15,7 +15,7 @@ ipath = os.path.dirname(abspath)
 os.chdir(ipath)
 
 
-def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, rank, messages_sent, badges_list):
+def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, rank, messages_sent, xp_current, next_level_xp, badges_list):
     # getting base images
     pfp_original = Image.open( requests.get(avatar_url, stream=True).raw )
     background = PIL.Image.new(
@@ -108,15 +108,29 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     drawText("Messages Sent", 12, (100, 255), 'Regular', draw)
     drawText("Badges Acquired", 12, (36, 304), 'Regular', draw)
 
+    # making number more human friendly
+    if messages_sent > 999:
+        messages_sent = int(messages_sent / 1000)
+        messages_sent = str(messages_sent)+"K"
+    if xp_current > 999:
+        xp_current = int(xp_current / 1000)
+        xp_current = str(xp_current)+"K"
+    if next_level_xp > 999:
+        next_level_xp = int(next_level_xp / 1000)
+        next_level_xp = str(next_level_xp)+"K"
 
     # progress bar values (I don't use drawText, because it's simpler to handle anhors and aligns just this way)
     font = ImageFont.truetype(constants.default_font, 12)
     font.set_variation_by_name('ExtraBold')
-    draw.text((380, 178),"54.2K / 60K",font=font, align="right", anchor="rt")
+    draw.text(
+        (380, 178),
+        xp_current +" / "+ next_level_xp,
+        font=font, align="right", anchor="rt"
+    )
     draw.text((380, 219),"89",font=font, align="right", anchor="rt")
     draw.text((380, 238),"#2",font=font, align="right", anchor="rt")
-    draw.text((380, 257),"235K",font=font, align="right", anchor="rt")
-    draw.text((380, 306),"5/7",font=font, align="right", anchor="rt")
+    draw.text((380, 257),messages_sent,font=font, align="right", anchor="rt")
+    draw.text((380, 306), str(len(badges_list)) + "/7",font=font, align="right", anchor="rt")
 
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
@@ -124,12 +138,14 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     profile_card.save("final_output.png")
 
 drawProfileCard(
-    "https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512",
-    "FreshTeaBagsByLipton",
-    2036,
-    222,
-    21,
-    1,
-    235000,
-    ['operation_elysian_veteran', 'daru69']
+    "https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512", # avatar
+    "FreshTeaBagsByLipton", # nickname
+    2036, # discriminator
+    222, # lab mem
+    21, # level
+    1, # rank
+    235621, # messages sent
+    54200, # xp current
+    60000, # next level xp
+    ['operation_elysian_veteran', 'daru69'] # Acquired badges
 )
