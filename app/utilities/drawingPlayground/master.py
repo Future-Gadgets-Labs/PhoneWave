@@ -86,7 +86,7 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     background = Image.alpha_composite(background, alpha_bg)
 
     # progress bar
-    progress_bar_xp = createProgressBar(100, constants.xp_bar_size, background.size, constants.xp_bar_offset)
+    progress_bar_xp = createProgressBar(87, constants.xp_bar_size, background.size, constants.xp_bar_offset)
     background = Image.alpha_composite(background, progress_bar_xp)
 
 
@@ -98,6 +98,25 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
         nickname = nickname[0:12] + "..."
 
     drawText(nickname, 32, (24, 56), 'ExtraBold', draw)
+    drawText(str(discriminator)+"  |  "+str(labmem_number), 20, (24, 96), 'Regular', draw)
+
+    drawText("LEVEL", 16, (40, 198), 'Regular', draw)
+    drawText(str(level), 20, (50, 222), 'ExtraBold', draw)
+    drawText("XP", 12, (100, 176), 'Regular', draw)
+    drawText("Level", 12, (100, 217), 'Regular', draw)
+    drawText("Rank", 12, (100, 236), 'Regular', draw)
+    drawText("Messages Sent", 12, (100, 255), 'Regular', draw)
+    drawText("Badges Acquired", 12, (36, 304), 'Regular', draw)
+
+
+    # progress bar values (I don't use drawText, because it's simpler to handle anhors and aligns just this way)
+    font = ImageFont.truetype(constants.default_font, 12)
+    font.set_variation_by_name('ExtraBold')
+    draw.text((380, 178),"54.2K / 60K",font=font, align="right", anchor="rt")
+    draw.text((380, 219),"89",font=font, align="right", anchor="rt")
+    draw.text((380, 238),"#2",font=font, align="right", anchor="rt")
+    draw.text((380, 257),"235K",font=font, align="right", anchor="rt")
+    draw.text((380, 306),"5/7",font=font, align="right", anchor="rt")
 
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
