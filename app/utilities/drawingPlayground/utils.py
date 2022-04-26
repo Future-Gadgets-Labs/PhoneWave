@@ -9,6 +9,13 @@ def drawBadgeBackgroundOnBackground(offset, background):
     background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 8))
     return background
 
+def drawBadgeImageOnBackground(offset, background, badge_name):
+    badge_path = constants.badges_map[badge_name]
+    black_region = Image.open(badge_path)
+    black_region = black_region.resize(constants.badge_size, Image.Resampling.LANCZOS)
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 8))
+    return background
+
 def createSemiTransparentBlackRegionOnBackground(size, offset, background):
     cropped_img = background.crop((
         offset[0],

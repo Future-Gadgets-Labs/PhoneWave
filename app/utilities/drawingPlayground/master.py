@@ -69,7 +69,10 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     for i in range(0,7):
         additional_x_offset = i * 10 + i * constants.badge_size[0]
         badge_offset = (constants.first_badge_offset[0] + additional_x_offset, constants.first_badge_offset[1])
-        background = drawBadgeBackgroundOnBackground(badge_offset, background)
+        if len(badges_list) > i:
+            background = drawBadgeImageOnBackground(badge_offset, background, badges_list[i])
+        else:
+            background = drawBadgeBackgroundOnBackground(badge_offset, background)
 
     # creating pfp circle https://stackoverflow.com/a/22336005/11273040 and pasting it on background
     bigsize = (pfp_original.size[0] * 2, pfp_original.size[1] * 2)
@@ -131,7 +134,6 @@ def drawProfileCard(avatar_url, nickname, discriminator, labmem_number, level, r
     draw.text((380, 238),"#2",font=font, align="right", anchor="rt")
     draw.text((380, 257),messages_sent,font=font, align="right", anchor="rt")
     draw.text((380, 306), str(len(badges_list)) + "/7",font=font, align="right", anchor="rt")
-
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background

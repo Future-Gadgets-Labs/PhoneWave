@@ -26,6 +26,10 @@ xp_bar_offset = (100, 195)
 
 # IMAGE PATHS
 server_icon_path = 'server_icon.png'
+badges_map = {
+    "operation_elysian_veteran": "badges/operation_elysian_vet.png",
+    "daru69": "badges/daru69.png"
+}
 
 # FONTS
 default_font = "fonts/MerriweatherSansItalic/MerriweatherSans-VariableFont_wght.ttf"
