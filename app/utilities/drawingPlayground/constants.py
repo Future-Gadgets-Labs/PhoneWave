@@ -8,7 +8,7 @@ blurry_region_radius = 12
 blurry_region_size = (395, 380)
 black_region_1_size = (371, 118)
 black_region_2_size = (371, 88)
-badge_size = (41,39)
+badge_size = (41,41)
 pfp_circle_size = (100,100)
 xp_bar_size = (283, 10)
 
