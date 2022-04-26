@@ -1,8 +1,39 @@
 import sys
 import PIL
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
+
 from . import constants
-solid_fill =  (50,50,50,255)
+
+
+def drawBadgeBackgroundOnBackground(offset, background):
+    black_region = PIL.Image.new(mode="RGBA", size=constants.badge_size, color=(255, 255, 255, 25))
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 8))
+    return background
+
+def drawBadgeImageOnBackground(offset, background, badge_name):
+    badge_path = constants.badges_map[badge_name]
+    black_region = Image.open(badge_path)
+    black_region = black_region.resize(constants.badge_size, Image.Resampling.LANCZOS)
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 8))
+    return background
+
+def createSemiTransparentBlackRegionOnBackground(size, offset, background):
+    cropped_img = background.crop((
+        offset[0],
+        offset[1],
+        size[0]+offset[0],
+        size[1]+offset[1]
+    ))
+    alpha_bg = PIL.Image.new(mode="RGBA", size=cropped_img.size, color=(18, 17, 21, 127))
+    black_region = Image.alpha_composite(cropped_img, alpha_bg)
+    background.paste(black_region, (offset[0], offset[1]), create_rounded_rectangle_mask(black_region, 12))
+    return background
+
+def applyAlphaWithMask(image, mask_path):
+    mask = Image.open(mask_path).convert('L')
+    output = ImageOps.fit(image, mask.size, centering=(0.5, 0.5))
+    output.putalpha(mask)
+    return output
 
 def drawText(text, size, location, weight, draw, color=(255,255,255)):
     font_path = constants.default_font
@@ -11,6 +42,7 @@ def drawText(text, size, location, weight, draw, color=(255,255,255)):
     draw.text(location, text, color, font=font)
 
 def create_rounded_rectangle_mask(rectangle, radius):
+    solid_fill =  (50,50,50,255)
     # create mask image. all pixels set to translucent
     i = Image.new("RGBA",rectangle.size,(0,0,0,0))
 
@@ -50,38 +82,41 @@ def ReduceOpacity(im, opacity):
     return im
 
 
-def createProgressBar(target_progressbar_width, background_size, location):
+def createProgressBar(progress_percent, target_size, background_size, location):
 
-    #target_progressbar_width =  140
+    # getting how much progress user has
+    scale =  target_size[0] / 100
+    target_progressbar_width = int(scale * progress_percent)
+
 
     # setting progressbar_background
     progressbar_background = Image.open('masks/progressbar_background.png')
-    progressbar_background = progressbar_background.resize((248, 8), Image.Resampling.LANCZOS)
+    progressbar_background = progressbar_background.resize((target_size[0], target_size[1]), Image.Resampling.LANCZOS)
     alpha_bg = PIL.Image.new(mode="RGBA", size=progressbar_background.size, color=(0, 0, 0, 0))
     alpha_bg.paste(progressbar_background, (0, 0))
 
     # getting progressbar_full and rounding it to mask
     progressbar_full = Image.open('masks/progressbar_full.png')
     progressbar_full = progressbar_full.convert('RGBA')
-    progressbar_full = progressbar_full.resize((248,8), Image.Resampling.LANCZOS)
+    progressbar_full = progressbar_full.resize((target_size[0],target_size[1]), Image.Resampling.LANCZOS)
 
     progressbar_mask = Image.open('masks/progressbar_mask.png').convert('L')
-    progressbar_mask = progressbar_mask.resize((248,8), Image.Resampling.LANCZOS)
+    progressbar_mask = progressbar_mask.resize((target_size[0],target_size[1]), Image.Resampling.LANCZOS)
     output = ImageOps.fit(progressbar_full, progressbar_mask.size, centering=(0.5, 0.5))
     output.putalpha(progressbar_mask)
     progressbar_full = output
 
-    alpha_rectangle = PIL.Image.new(mode="RGBA", size=(248-target_progressbar_width, 8), color=(0, 0, 0, 0))
+    alpha_rectangle = PIL.Image.new(mode="RGBA", size=(target_size[0]-target_progressbar_width, target_size[1]), color=(0, 0, 0, 0))
     progressbar_full.paste(alpha_rectangle, (target_progressbar_width, 0))
 
     # creating head for gradient
-    progressbar_mask_head = progressbar_mask.crop((248-8, 0, 248, 8))
-    progressbar_head = progressbar_full.crop((target_progressbar_width-8, 0, target_progressbar_width, 8))
+    progressbar_mask_head = progressbar_mask.crop((target_size[0]-target_size[1], 0, target_size[0], target_size[1]))
+    progressbar_head = progressbar_full.crop((target_progressbar_width-target_size[1], 0, target_progressbar_width, target_size[1]))
     output = ImageOps.fit(progressbar_head, progressbar_mask_head.size, centering=(0.5, 0.5))
     output.putalpha(progressbar_mask_head)
     progressbar_head = output
 
-    progressbar_full.paste(progressbar_head, (target_progressbar_width-8, 0))
+    progressbar_full.paste(progressbar_head, (target_progressbar_width-target_size[1], 0))
 
     alpha_bg = Image.alpha_composite(alpha_bg, progressbar_full)
     alpha_bg_bg = PIL.Image.new(mode="RGBA", size=background_size, color=(0, 0, 0, 0))

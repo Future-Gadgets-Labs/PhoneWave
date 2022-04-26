@@ -16,17 +16,26 @@ def profileCardFromMember(member):
     if not nickname:
         nickname = member.name
 
+
+
+    #######################################################
+    #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
+    #######################################################
+
     return discord.File(
         drawing.drawProfileCard(
-            member.avatar.url,
-            nickname,
-            member.discriminator,
-            222, # labmem number
-            58, # level
+            member.avatar.url, # avatar
+            nickname, # nickname
+            member.discriminator, # discriminator
+            222, # lab mem
+            21, # level
             1, # rank
-            235000, # messages sent
-            ['operation_elysian_veteran', 'daru69']
-        ), filename="profile_card.png" )
+            235621, # messages sent
+            54200, # xp current
+            60000, # next level xp
+            ['operation_elysian_veteran', 'daru69'] # Acquired badges names, they represent file as shown in constants.badges_map
+        ), filename="profile_card.png"
+    )
 
 class Hiddenprofilecard(commands.Cog):
     def __init__(self, bot):
