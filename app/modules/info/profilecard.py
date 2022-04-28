@@ -33,12 +33,12 @@ def profileCardFromMember(member):
     )
 
 
-class Hiddenprofilecard(commands.Cog):
+class Profilecard(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.command()
-    async def hpc(self, ctx: Context, member: DiscordMember = None):
+    async def profilecard(self, ctx: Context, member: DiscordMember = None):
         logger.info("Received 'Hiddenprofilecard' command...")
 
         # checking if any mentions were sent
@@ -51,4 +51,4 @@ class Hiddenprofilecard(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Hiddenprofilecard(bot))
+    bot.add_cog(Profilecard(bot))
