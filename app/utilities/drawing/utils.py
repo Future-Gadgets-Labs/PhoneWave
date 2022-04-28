@@ -1,12 +1,12 @@
 import sys
-import PIL
+
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 
 from . import constants
 
 
 def draw_badge_background_on_background(offset, background):
-    black_region = PIL.Image.new(
+    black_region = Image.new(
         mode="RGBA", size=constants.BADGE_SIZE, color=(255, 255, 255, 25)
     )
     background.paste(
@@ -33,9 +33,7 @@ def create_semi_transparent_black_region_on_background(size, offset, background)
     cropped_img = background.crop(
         (offset[0], offset[1], size[0] + offset[0], size[1] + offset[1])
     )
-    alpha_bg = PIL.Image.new(
-        mode="RGBA", size=cropped_img.size, color=(18, 17, 21, 127)
-    )
+    alpha_bg = Image.new(mode="RGBA", size=cropped_img.size, color=(18, 17, 21, 127))
     black_region = Image.alpha_composite(cropped_img, alpha_bg)
     background.paste(
         black_region,
@@ -99,7 +97,7 @@ def create_progress_bar(progress_percent, target_size, background_size, location
     progressbar_background = progressbar_background.resize(
         (target_size[0], target_size[1]), Image.Resampling.LANCZOS
     )
-    alpha_bg = PIL.Image.new(
+    alpha_bg = Image.new(
         mode="RGBA", size=progressbar_background.size, color=(0, 0, 0, 0)
     )
     alpha_bg.paste(progressbar_background, (0, 0))
@@ -119,7 +117,7 @@ def create_progress_bar(progress_percent, target_size, background_size, location
     output.putalpha(progressbar_mask)
     progressbar_full = output
 
-    alpha_rectangle = PIL.Image.new(
+    alpha_rectangle = Image.new(
         mode="RGBA",
         size=(target_size[0] - target_progressbar_width, target_size[1]),
         color=(0, 0, 0, 0),
@@ -149,7 +147,7 @@ def create_progress_bar(progress_percent, target_size, background_size, location
     )
 
     alpha_bg = Image.alpha_composite(alpha_bg, progressbar_full)
-    alpha_bg_bg = PIL.Image.new(mode="RGBA", size=background_size, color=(0, 0, 0, 0))
+    alpha_bg_bg = Image.new(mode="RGBA", size=background_size, color=(0, 0, 0, 0))
     alpha_bg_bg.paste(alpha_bg, location)
 
     return alpha_bg_bg

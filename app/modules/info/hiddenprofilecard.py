@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Context
 
+from app.types.discord import DiscordMember
 from app.utilities import logger
 import app.utilities.drawing.master as drawing
 
@@ -37,8 +38,7 @@ class Hiddenprofilecard(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    # async def hiddenprofilecard(self, ctx: Context):
-    async def hpc(self, ctx: Context, member: discord.Member = None):
+    async def hpc(self, ctx: Context, member: DiscordMember = None):
         logger.info("Received 'Hiddenprofilecard' command...")
 
         # checking if any mentions were sent

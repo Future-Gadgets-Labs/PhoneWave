@@ -1,10 +1,9 @@
 import sys
 import os
-import PIL
-from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
-from pathlib import Path
-import requests
 from io import BytesIO
+
+from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
+import requests
 
 from .utils import *
 from . import constants
@@ -30,7 +29,7 @@ def draw_profile_card(
 ):
     # getting base images
     pfp_original = Image.open(requests.get(avatar_url, stream=True).raw)
-    background = PIL.Image.new(
+    background = Image.new(
         mode="RGBA", size=constants.BACKGROUND_DIMENSIONS, color=(0, 0, 0, 255)
     )
 
@@ -54,9 +53,7 @@ def draw_profile_card(
     )
 
     blurred_img = cropped_img.filter(ImageFilter.GaussianBlur(25)).convert("RGBA")
-    alpha_bg = PIL.Image.new(
-        mode="RGBA", size=blurred_img.size, color=(18, 17, 21, 127)
-    )
+    alpha_bg = Image.new(mode="RGBA", size=blurred_img.size, color=(18, 17, 21, 127))
     blurred_img = Image.alpha_composite(blurred_img, alpha_bg)
 
     background.paste(
@@ -79,7 +76,7 @@ def draw_profile_card(
             constants.FIRST_BADGE_OFFSET[0] + additional_x_offset,
             constants.FIRST_BADGE_OFFSET[1],
         )
-        if len(badges_list) > i:
+        if i < len(badges_list):
             background = draw_badge_image_on_background(
                 badge_offset, background, badges_list[i]
             )
@@ -96,7 +93,7 @@ def draw_profile_card(
     pfp_circle = ImageOps.fit(pfp_original, mask.size, centering=(0.5, 0.5))
     pfp_circle.putalpha(mask)
 
-    alpha_bg = PIL.Image.new(mode="RGBA", size=background.size, color=(0, 0, 0, 0))
+    alpha_bg = Image.new(mode="RGBA", size=background.size, color=(0, 0, 0, 0))
     alpha_bg.paste(pfp_circle, constants.PFP_CIRCLE_OFFSET)
     background = Image.alpha_composite(background, alpha_bg)
 
