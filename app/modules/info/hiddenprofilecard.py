@@ -8,11 +8,6 @@ import app.utilities.drawing.master as drawing
 
 def profileCardFromMember(member):
 
-    # getting user's server specific nickname (if it's not set, then just getting his general discord name)
-    nickname = member.nick
-    if not nickname:
-        nickname = member.name
-
     #######################################################
     #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
     #######################################################
@@ -20,7 +15,7 @@ def profileCardFromMember(member):
     return discord.File(
         drawing.draw_profile_card(
             member.avatar.url,  # avatar
-            nickname,  # nickname
+            member.display_name,  # nickname
             member.discriminator,  # discriminator
             222,  # lab mem
             21,  # level
