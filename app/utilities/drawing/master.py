@@ -153,7 +153,6 @@ def draw_profile_card(
 
     # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
     profile_card = background
-    profile_card.save("final_output.png")
 
     bytes = BytesIO()
     profile_card.save(bytes, format="PNG")
