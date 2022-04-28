@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import requests
 
+from .. import text
 from .utils import *
 from . import constants
 
@@ -106,11 +107,7 @@ def draw_profile_card(
     # drawing texts
     draw = ImageDraw.Draw(background)
 
-    # checking if nickname provided is longer than 9, if so then it needs to be cut and 3 dots need to be added
-    if len(nickname) > 12:
-        nickname = nickname[0:12] + "..."
-
-    draw_text(nickname, 32, (24, 56), "ExtraBold", draw)
+    draw_text(text.trim_with_ellipsis(nickname, 12), 32, (24, 56), "ExtraBold", draw)
     draw_text(
         str(discriminator) + "  |  " + str(labmem_number), 20, (24, 96), "Regular", draw
     )
@@ -124,15 +121,9 @@ def draw_profile_card(
     draw_text("Badges Acquired", 12, (36, 304), "Regular", draw)
 
     # making number more human friendly
-    if messages_sent > 999:
-        messages_sent = int(messages_sent / 1000)
-        messages_sent = str(messages_sent) + "K"
-    if xp_current > 999:
-        xp_current = int(xp_current / 1000)
-        xp_current = str(xp_current) + "K"
-    if next_level_xp > 999:
-        next_level_xp = int(next_level_xp / 1000)
-        next_level_xp = str(next_level_xp) + "K"
+    messages_sent = text.shorten_big_number(messages_sent)
+    xp_current = text.shorten_big_number(xp_current)
+    next_level_xp = text.shorten_big_number(next_level_xp)
 
     # progress bar values (I don't use draw_text, because it's simpler to handle anhors and aligns just this way)
     font = ImageFont.truetype(constants.DEFAULT_FONT, 12)
