@@ -6,9 +6,6 @@ from app.utilities import logger
 import app.utilities.drawing.master as drawing
 
 
-ContextType = commands.Context
-
-
 def profileCardFromMember(member):
 
     # getting user's server specific nickname (if it's not set, then just getting his general discord name)
