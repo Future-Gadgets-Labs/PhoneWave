@@ -21,7 +21,7 @@ def profileCardFromMember(member):
     #######################################################
 
     return discord.File(
-        drawing.drawProfileCard(
+        drawing.draw_profile_card(
             member.avatar.url,  # avatar
             nickname,  # nickname
             member.discriminator,  # discriminator

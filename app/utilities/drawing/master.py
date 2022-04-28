@@ -16,7 +16,7 @@ ipath = os.path.dirname(abspath)
 os.chdir(ipath)
 
 
-def drawProfileCard(
+def draw_profile_card(
     avatar_url,
     nickname,
     discriminator,
@@ -31,25 +31,25 @@ def drawProfileCard(
     # getting base images
     pfp_original = Image.open(requests.get(avatar_url, stream=True).raw)
     background = PIL.Image.new(
-        mode="RGBA", size=constants.background_dimensions, color=(0, 0, 0, 255)
+        mode="RGBA", size=constants.BACKGROUND_DIMENSIONS, color=(0, 0, 0, 255)
     )
 
-    pfp_scaled = ImageOps.fit(pfp_original, constants.background_dimensions)
+    pfp_scaled = ImageOps.fit(pfp_original, constants.BACKGROUND_DIMENSIONS)
     # putting scaled pfp on background
     background = pfp_scaled.crop(
-        (0, 0, constants.background_dimensions[0], constants.background_dimensions[1])
+        (0, 0, constants.BACKGROUND_DIMENSIONS[0], constants.BACKGROUND_DIMENSIONS[1])
     )
 
     # making background rounded rectangle (according to masks/background.png)
-    background = applyAlphaWithMask(background, "masks/background.png")
+    background = apply_alpha_with_mask(background, "masks/background.png")
 
     # adding blurry region in the middle of background
     cropped_img = background.crop(
         (
-            constants.blurry_background_offset[0],
-            constants.blurry_background_offset[1],
-            constants.blurry_region_size[0] + constants.blurry_background_offset[0],
-            constants.blurry_region_size[1] + constants.blurry_background_offset[1],
+            constants.BLURRY_BACKGROUND_OFFSET[0],
+            constants.BLURRY_BACKGROUND_OFFSET[1],
+            constants.BLURRY_REGION_SIZE[0] + constants.BLURRY_BACKGROUND_OFFSET[0],
+            constants.BLURRY_REGION_SIZE[1] + constants.BLURRY_BACKGROUND_OFFSET[1],
         )
     )
 
@@ -61,30 +61,30 @@ def drawProfileCard(
 
     background.paste(
         blurred_img,
-        (constants.blurry_background_offset[0], constants.blurry_background_offset[1]),
-        create_rounded_rectangle_mask(blurred_img, constants.blurry_region_radius),
+        (constants.BLURRY_BACKGROUND_OFFSET[0], constants.BLURRY_BACKGROUND_OFFSET[1]),
+        create_rounded_rectangle_mask(blurred_img, constants.BLURRY_REGION_RADIUS),
     )
 
     # adding semi-black-transparent rounded rectangle areas on top of blurried area
-    background = createSemiTransparentBlackRegionOnBackground(
-        constants.black_region_1_size, constants.black_region_1_offset, background
+    background = create_semi_transparent_black_region_on_background(
+        constants.BLACK_REGION_1_SIZE, constants.BLACK_REGION_1_OFFSET, background
     )
-    background = createSemiTransparentBlackRegionOnBackground(
-        constants.black_region_2_size, constants.black_region_2_offset, background
+    background = create_semi_transparent_black_region_on_background(
+        constants.BLACK_REGION_2_SIZE, constants.BLACK_REGION_2_OFFSET, background
     )
 
     for i in range(0, 7):
-        additional_x_offset = i * 10 + i * constants.badge_size[0]
+        additional_x_offset = i * constants.BADGES_SPACING + i * constants.BADGE_SIZE[0]
         badge_offset = (
-            constants.first_badge_offset[0] + additional_x_offset,
-            constants.first_badge_offset[1],
+            constants.FIRST_BADGE_OFFSET[0] + additional_x_offset,
+            constants.FIRST_BADGE_OFFSET[1],
         )
         if len(badges_list) > i:
-            background = drawBadgeImageOnBackground(
+            background = draw_badge_image_on_background(
                 badge_offset, background, badges_list[i]
             )
         else:
-            background = drawBadgeBackgroundOnBackground(badge_offset, background)
+            background = draw_badge_background_on_background(badge_offset, background)
 
     # creating pfp circle https://stackoverflow.com/a/22336005/11273040 and pasting it on background
     bigsize = (pfp_original.size[0] * 2, pfp_original.size[1] * 2)
@@ -92,17 +92,17 @@ def drawProfileCard(
     draw = ImageDraw.Draw(mask)
     draw.ellipse((0, 0) + bigsize, fill=255)
 
-    mask = mask.resize(constants.pfp_circle_size, Image.Resampling.LANCZOS)
+    mask = mask.resize(constants.PFP_CIRCLE_SIZE, Image.Resampling.LANCZOS)
     pfp_circle = ImageOps.fit(pfp_original, mask.size, centering=(0.5, 0.5))
     pfp_circle.putalpha(mask)
 
     alpha_bg = PIL.Image.new(mode="RGBA", size=background.size, color=(0, 0, 0, 0))
-    alpha_bg.paste(pfp_circle, constants.pfp_circle_offset)
+    alpha_bg.paste(pfp_circle, constants.PFP_CIRCLE_OFFSET)
     background = Image.alpha_composite(background, alpha_bg)
 
     # progress bar
-    progress_bar_xp = createProgressBar(
-        87, constants.xp_bar_size, background.size, constants.xp_bar_offset
+    progress_bar_xp = create_progress_bar(
+        87, constants.XP_BAR_SIZE, background.size, constants.XP_BAR_OFFSET
     )
     background = Image.alpha_composite(background, progress_bar_xp)
 
@@ -113,18 +113,18 @@ def drawProfileCard(
     if len(nickname) > 12:
         nickname = nickname[0:12] + "..."
 
-    drawText(nickname, 32, (24, 56), "ExtraBold", draw)
-    drawText(
+    draw_text(nickname, 32, (24, 56), "ExtraBold", draw)
+    draw_text(
         str(discriminator) + "  |  " + str(labmem_number), 20, (24, 96), "Regular", draw
     )
 
-    drawText("LEVEL", 16, (40, 198), "Regular", draw)
-    drawText(str(level), 20, (50, 222), "ExtraBold", draw)
-    drawText("XP", 12, (100, 176), "Regular", draw)
-    drawText("Level", 12, (100, 217), "Regular", draw)
-    drawText("Rank", 12, (100, 236), "Regular", draw)
-    drawText("Messages Sent", 12, (100, 255), "Regular", draw)
-    drawText("Badges Acquired", 12, (36, 304), "Regular", draw)
+    draw_text("LEVEL", 16, (40, 198), "Regular", draw)
+    draw_text(str(level), 20, (50, 222), "ExtraBold", draw)
+    draw_text("XP", 12, (100, 176), "Regular", draw)
+    draw_text("Level", 12, (100, 217), "Regular", draw)
+    draw_text("Rank", 12, (100, 236), "Regular", draw)
+    draw_text("Messages Sent", 12, (100, 255), "Regular", draw)
+    draw_text("Badges Acquired", 12, (36, 304), "Regular", draw)
 
     # making number more human friendly
     if messages_sent > 999:
@@ -137,8 +137,8 @@ def drawProfileCard(
         next_level_xp = int(next_level_xp / 1000)
         next_level_xp = str(next_level_xp) + "K"
 
-    # progress bar values (I don't use drawText, because it's simpler to handle anhors and aligns just this way)
-    font = ImageFont.truetype(constants.default_font, 12)
+    # progress bar values (I don't use draw_text, because it's simpler to handle anhors and aligns just this way)
+    font = ImageFont.truetype(constants.DEFAULT_FONT, 12)
     font.set_variation_by_name("ExtraBold")
     draw.text(
         (380, 178),
@@ -167,7 +167,7 @@ def drawProfileCard(
 
 """
 # example usage of function
-drawProfileCard(
+draw_profile_card(
     "https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512", # avatar
     "FreshTeaBagsByLipton", # nickname
     2036, # discriminator
@@ -177,6 +177,6 @@ drawProfileCard(
     235621, # messages sent
     54200, # xp current
     60000, # next level xp
-    ['operation_elysian_veteran', 'daru69'] # Acquired badges names, they represent file as shown in constants.badges_map
+    ['operation_elysian_veteran', 'daru69'] # Acquired badges names, they represent file as shown in constants.BADGES_MAP
 )
 """
