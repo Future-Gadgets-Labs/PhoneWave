@@ -89,18 +89,6 @@ def create_rounded_rectangle_mask(rectangle, radius):
     return i
 
 
-def reduce_opacity(im, opacity):
-    assert opacity >= 0 and opacity <= 1
-    if im.mode != "RGBA":
-        im = im.convert("RGBA")
-    else:
-        im = im.copy()
-    alpha = im.split()[3]
-    alpha = ImageEnhance.Brightness(alpha).enhance(opacity)
-    im.putalpha(alpha)
-    return im
-
-
 def create_progress_bar(progress_percent, target_size, background_size, location):
     # getting how much progress user has
     scale = target_size[0] / 100
