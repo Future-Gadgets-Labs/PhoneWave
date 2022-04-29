@@ -3,7 +3,7 @@ def trim_with_ellipsis(text, max_length):
     checking if provided string is longer than given value, if so then it needs to be cut and 3 dots need to be added
     """
     if len(text) > 12:
-        text = text[0:9] + "..."
+        text = text[0 : max_length - 3] + "..."
     return text
 
 
