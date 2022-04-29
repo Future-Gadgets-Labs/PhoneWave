@@ -5,9 +5,6 @@ from discord.ext.commands import Context
 from app.utilities import logger
 
 
-ContextType = commands.Context
-
-
 class Ping(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
