@@ -2,7 +2,7 @@ import sys
 
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 
-from . import constants
+from .profilecard import constants
 
 
 def draw_badge_background_on_background(offset, background):
@@ -51,8 +51,7 @@ def apply_alpha_with_mask(image, mask_path):
 
 
 def draw_text(text, size, location, weight, draw, color=(255, 255, 255)):
-    font_path = constants.DEFAULT_FONT
-    font = ImageFont.truetype(font_path, size)
+    font = ImageFont.truetype(constants.DEFAULT_FONT_PATH, size)
     font.set_variation_by_name(weight)
     draw.text(location, text, color, font=font)
 
@@ -93,7 +92,7 @@ def create_progress_bar(progress_percent, target_size, background_size, location
     target_progressbar_width = int(scale * progress_percent)
 
     # setting progressbar_background
-    progressbar_background = Image.open("masks/progressbar_background.png")
+    progressbar_background = Image.open(constants.PROGRESS_BAR_BACKGROUND_PATH)
     progressbar_background = progressbar_background.resize(
         (target_size[0], target_size[1]), Image.Resampling.LANCZOS
     )
@@ -103,13 +102,13 @@ def create_progress_bar(progress_percent, target_size, background_size, location
     alpha_bg.paste(progressbar_background, (0, 0))
 
     # getting progressbar_full and rounding it to mask
-    progressbar_full = Image.open("masks/progressbar_full.png")
+    progressbar_full = Image.open(constants.PROGRESS_BAR_FULL_PATH)
     progressbar_full = progressbar_full.convert("RGBA")
     progressbar_full = progressbar_full.resize(
         (target_size[0], target_size[1]), Image.Resampling.LANCZOS
     )
 
-    progressbar_mask = Image.open("masks/progressbar_mask.png").convert("L")
+    progressbar_mask = Image.open(constants.PROGRESS_BAR_MASK_PATH).convert("L")
     progressbar_mask = progressbar_mask.resize(
         (target_size[0], target_size[1]), Image.Resampling.LANCZOS
     )

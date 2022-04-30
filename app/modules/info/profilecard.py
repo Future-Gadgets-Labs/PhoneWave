@@ -4,7 +4,7 @@ from discord.ext.commands import Context
 
 from app.types.discord import DiscordMember
 from app.utilities import logger
-import app.utilities.drawing.master as drawing
+from app.drawing.profilecard.master import draw_profile_card
 
 
 def profileCardFromMember(member):
@@ -12,9 +12,9 @@ def profileCardFromMember(member):
     #######################################################
     #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
     #######################################################
-
+    print(member)
     return discord.File(
-        drawing.draw_profile_card(
+        draw_profile_card(
             member.avatar.url,  # avatar
             member.display_name,  # nickname
             member.discriminator,  # discriminator
@@ -39,9 +39,8 @@ class Profilecard(commands.Cog):
 
     @commands.command()
     async def profilecard(self, ctx: Context, member: DiscordMember = None):
-        logger.info("Received 'Hiddenprofilecard' command...")
+        logger.info("Received 'profilecard' command...")
 
-        # checking if any mentions were sent
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
                 await ctx.send(file=profileCardFromMember(mention))

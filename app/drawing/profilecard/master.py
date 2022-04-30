@@ -5,15 +5,10 @@ from io import BytesIO
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import requests
 
-from .. import text
-from .utils import *
+from app.utilities import text
+
+from ..utils import *
 from . import constants
-
-
-# changing import path
-abspath = os.path.abspath(__file__)
-ipath = os.path.dirname(abspath)
-os.chdir(ipath)
 
 
 def draw_profile_card(
@@ -41,7 +36,7 @@ def draw_profile_card(
     )
 
     # making background rounded rectangle (according to masks/background.png)
-    background = apply_alpha_with_mask(background, "masks/background.png")
+    background = apply_alpha_with_mask(background, constants.BACKGROUND_MASK_PATH)
 
     # adding blurry region in the middle of background
     cropped_img = background.crop(
@@ -126,7 +121,7 @@ def draw_profile_card(
     next_level_xp = text.shorten_big_number(next_level_xp)
 
     # progress bar values (I don't use draw_text, because it's simpler to handle anhors and aligns just this way)
-    font = ImageFont.truetype(constants.DEFAULT_FONT, 12)
+    font = ImageFont.truetype(constants.DEFAULT_FONT_PATH, 12)
     font.set_variation_by_name("ExtraBold")
     draw.text(
         (380, 178),
@@ -142,9 +137,10 @@ def draw_profile_card(
         (380, 306), str(len(badges_list)) + "/7", font=font, align="right", anchor="rt"
     )
 
-    # merging full_background (the one with alpha around it) with background (the one with all card contents in it)
+    # this is final image
     profile_card = background
 
+    # transforming it into bytes, so it can be used for discord file
     bytes = BytesIO()
     profile_card.save(bytes, format="PNG")
     bytes.seek(0)
