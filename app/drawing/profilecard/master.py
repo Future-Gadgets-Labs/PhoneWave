@@ -6,8 +6,7 @@ from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import requests
 
 from app.utilities import text
-
-from ..utils import *
+from .. import utils
 from . import constants
 
 
@@ -36,7 +35,7 @@ def draw_profile_card(
     )
 
     # making background rounded rectangle (according to masks/background.png)
-    background = apply_alpha_with_mask(background, constants.BACKGROUND_MASK_PATH)
+    background = utils.apply_alpha_with_mask(background, constants.BACKGROUND_MASK_PATH)
 
     # adding blurry region in the middle of background
     cropped_img = background.crop(
@@ -55,14 +54,16 @@ def draw_profile_card(
     background.paste(
         blurred_img,
         (constants.BLURRY_BACKGROUND_OFFSET[0], constants.BLURRY_BACKGROUND_OFFSET[1]),
-        create_rounded_rectangle_mask(blurred_img, constants.BLURRY_REGION_RADIUS),
+        utils.create_rounded_rectangle_mask(
+            blurred_img, constants.BLURRY_REGION_RADIUS
+        ),
     )
 
     # adding semi-black-transparent rounded rectangle areas on top of blurried area
-    background = create_semi_transparent_black_region_on_background(
+    background = utils.create_semi_transparent_black_region_on_background(
         constants.BLACK_REGION_1_SIZE, constants.BLACK_REGION_1_OFFSET, background
     )
-    background = create_semi_transparent_black_region_on_background(
+    background = utils.create_semi_transparent_black_region_on_background(
         constants.BLACK_REGION_2_SIZE, constants.BLACK_REGION_2_OFFSET, background
     )
 
@@ -73,11 +74,13 @@ def draw_profile_card(
             constants.FIRST_BADGE_OFFSET[1],
         )
         if i < len(badges_list):
-            background = draw_badge_image_on_background(
+            background = utils.draw_badge_image_on_background(
                 badge_offset, background, badges_list[i]
             )
         else:
-            background = draw_badge_background_on_background(badge_offset, background)
+            background = utils.draw_badge_background_on_background(
+                badge_offset, background
+            )
 
     # creating pfp circle https://stackoverflow.com/a/22336005/11273040 and pasting it on background
     bigsize = (pfp_original.size[0] * 2, pfp_original.size[1] * 2)
@@ -94,7 +97,7 @@ def draw_profile_card(
     background = Image.alpha_composite(background, alpha_bg)
 
     # progress bar
-    progress_bar_xp = create_progress_bar(
+    progress_bar_xp = utils.create_progress_bar(
         87, constants.XP_BAR_SIZE, background.size, constants.XP_BAR_OFFSET
     )
     background = Image.alpha_composite(background, progress_bar_xp)
@@ -102,25 +105,27 @@ def draw_profile_card(
     # drawing texts
     draw = ImageDraw.Draw(background)
 
-    draw_text(text.trim_with_ellipsis(nickname, 12), 32, (24, 56), "ExtraBold", draw)
-    draw_text(
+    utils.draw_text(
+        text.trim_with_ellipsis(nickname, 12), 32, (24, 56), "ExtraBold", draw
+    )
+    utils.draw_text(
         str(discriminator) + "  |  " + str(labmem_number), 20, (24, 96), "Regular", draw
     )
 
-    draw_text("LEVEL", 16, (40, 198), "Regular", draw)
-    draw_text(str(level), 20, (50, 222), "ExtraBold", draw)
-    draw_text("XP", 12, (100, 176), "Regular", draw)
-    draw_text("Level", 12, (100, 217), "Regular", draw)
-    draw_text("Rank", 12, (100, 236), "Regular", draw)
-    draw_text("Messages Sent", 12, (100, 255), "Regular", draw)
-    draw_text("Badges Acquired", 12, (36, 304), "Regular", draw)
+    utils.draw_text("LEVEL", 16, (40, 198), "Regular", draw)
+    utils.draw_text(str(level), 20, (50, 222), "ExtraBold", draw)
+    utils.draw_text("XP", 12, (100, 176), "Regular", draw)
+    utils.draw_text("Level", 12, (100, 217), "Regular", draw)
+    utils.draw_text("Rank", 12, (100, 236), "Regular", draw)
+    utils.draw_text("Messages Sent", 12, (100, 255), "Regular", draw)
+    utils.draw_text("Badges Acquired", 12, (36, 304), "Regular", draw)
 
     # making number more human friendly
     messages_sent = text.shorten_big_number(messages_sent)
     xp_current = text.shorten_big_number(xp_current)
     next_level_xp = text.shorten_big_number(next_level_xp)
 
-    # progress bar values (I don't use draw_text, because it's simpler to handle anhors and aligns just this way)
+    # progress bar values (I don't use utils.draw_text(), because it's simpler to handle anhors and aligns just this way)
     font = ImageFont.truetype(constants.DEFAULT_FONT_PATH, 12)
     font.set_variation_by_name("ExtraBold")
     draw.text(
