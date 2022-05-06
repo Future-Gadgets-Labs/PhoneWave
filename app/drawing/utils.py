@@ -1,5 +1,3 @@
-import sys
-
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 
 from .profilecard import constants

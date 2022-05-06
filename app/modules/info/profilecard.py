@@ -12,7 +12,7 @@ def profileCardFromMember(member):
     #######################################################
     #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
     #######################################################
-    print(member)
+
     return discord.File(
         draw_profile_card(
             member.avatar.url,  # avatar
@@ -39,8 +39,6 @@ class Profilecard(commands.Cog):
 
     @commands.command()
     async def profilecard(self, ctx: Context, member: DiscordMember = None):
-        logger.info("Received 'profilecard' command...")
-
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
                 await ctx.send(file=profileCardFromMember(mention))
