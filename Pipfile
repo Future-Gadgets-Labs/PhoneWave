@@ -12,6 +12,7 @@ structlog = "*"
 python-dotenv = "*"
 python-json-logger = "*"
 pymongo = {extras = ["srv"], version = "*"}
+requests = "*"
 
 [dev-packages]
 rich = "*"

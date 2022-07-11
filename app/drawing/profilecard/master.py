@@ -22,6 +22,21 @@ def draw_profile_card(
     next_level_xp,
     badges_list,
 ):
+    """
+    creates profile card image with provided data, and returns it in form of BytesIO bytes
+
+    avatar_url (string): Link to image, that will be used as both card background and avatar circle
+    nickname (string): Nickname that will be used for the card. If it's too long it will be trimmed (see app.utilities.text.trim_with_ellipsis)
+    discriminator (int | string): Discord 4 digits long discriminator
+    labmem_number (int): Lab member number, usually 3 digits long
+    level (int): Discord level
+    rank (int): Discord rank
+    messages_sent (int): number of messages sent
+    xp_current (int): current amount of user's exp
+    next_level_xp (int): amount of xp needed to hit next level
+    badges_list (array of strings): Each string represents one badge, that user got. There's predefined list of badges at drawing/profilecard/constants.py.
+    """
+
     # getting base images
     pfp_original = Image.open(requests.get(avatar_url, stream=True).raw)
     background = Image.new(
@@ -151,20 +166,3 @@ def draw_profile_card(
     bytes.seek(0)
 
     return bytes
-
-
-"""
-# example usage of function
-draw_profile_card(
-    "https://cdn.discordapp.com/avatars/487896060316876800/b603f6cce63f7c6430559ae5c3a00f4b.png?size=512", # avatar
-    "FreshTeaBagsByLipton", # nickname
-    2036, # discriminator
-    222, # lab mem
-    21, # level
-    1, # rank
-    235621, # messages sent
-    54200, # xp current
-    60000, # next level xp
-    ['operation_elysian_veteran', 'daru69'] # Acquired badges names, they represent file as shown in constants.BADGES_MAP
-)
-"""
