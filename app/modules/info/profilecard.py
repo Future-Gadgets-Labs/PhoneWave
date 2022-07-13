@@ -40,7 +40,7 @@ class Profilecard(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def profilecard(self, ctx: Context, member: DiscordMember = None):
+    async def profilecard(self, ctx: Context, member:DiscordMember = None):
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
                 await ctx.send(file=profileCardFromMember(mention))
