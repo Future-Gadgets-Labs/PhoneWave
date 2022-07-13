@@ -1,7 +1,4 @@
-import sys
-import os
 from io import BytesIO
-
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
 import requests
 
@@ -38,7 +35,12 @@ def draw_profile_card(
     """
 
     # getting base images
-    pfp_original = Image.open(requests.get(avatar_url, stream=True).raw)
+    pfp_original = None
+    if utils.is_url_image(avatar_url):
+        pfp_original = Image.open(requests.get(avatar_url, stream=True).raw)
+    else:
+        pfp_original = Image.open(constants.default_discord_pfp)
+
     background = Image.new(
         mode="RGBA", size=constants.BACKGROUND_DIMENSIONS, color=(0, 0, 0, 255)
     )

@@ -36,7 +36,7 @@ PROGRESS_BAR_MASK_PATH = MASKS_PATH / "progressbar_mask.png"
 
 ASSETS_PATH = p.parent.parent.parent / "assets"
 
-test = ASSETS_PATH / "badges/operation_elysian_vet.png"
+default_discord_pfp = ASSETS_PATH / "others/default_discord_pfp.png"
 
 BADGES_MAP = {
     "operation_elysian_veteran": str(ASSETS_PATH / "badges/operation_elysian_vet.png"),

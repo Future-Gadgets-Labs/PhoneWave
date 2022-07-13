@@ -13,9 +13,14 @@ def profileCardFromMember(member):
     #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
     #######################################################
 
+    # if user has default avatar, then his .avatar is empty
+    avatar_url = ""
+    if member.avatar:
+        avatar_url = member.avatar.url
+
     return discord.File(
         draw_profile_card(
-            member.avatar.url,
+            avatar_url,
             member.display_name,
             member.discriminator,
             222,

@@ -1,6 +1,20 @@
 from PIL import Image, ImageDraw, ImageOps, ImageFont, ImageEnhance, ImageFilter
+import requests
 
 from .profilecard import constants
+
+
+def is_url_image(image_url):
+    # checking if url exists in the first place
+    if not image_url or requests.get(image_url).status_code != 200:
+        return False
+
+    # checking if given url contains image
+    image_formats = ("image/png", "image/jpeg", "image/jpg")
+    r = requests.head(image_url)
+    if r.headers["content-type"] in image_formats:
+        return True
+    return False
 
 
 def draw_badge_background_on_background(offset, background):
