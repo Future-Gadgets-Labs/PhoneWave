@@ -4,17 +4,25 @@ import requests
 from .profilecard import constants
 
 
-def is_url_image(image_url):
+def get_image_or_return_default(image_url, default_value):
+    """
+    Checks if image with provided link exists, if it doesn't it returns default, if it does it returns download image data
+    """
+
     # checking if url exists in the first place
-    if not image_url or requests.get(image_url).status_code != 200:
-        return False
+    if not image_url:
+        return default_value
+
+    response = requests.get(image_url, stream=True)
+    if response.status_code != 200:
+        return default_value
 
     # checking if given url contains image
     image_formats = ("image/png", "image/jpeg", "image/jpg")
-    r = requests.head(image_url)
-    if r.headers["content-type"] in image_formats:
-        return True
-    return False
+
+    if response.headers["content-type"] in image_formats:
+        return response.raw
+    return default_value
 
 
 def draw_badge_background_on_background(offset, background):

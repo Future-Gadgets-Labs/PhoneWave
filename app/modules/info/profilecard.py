@@ -13,7 +13,7 @@ def profileCardFromMember(member):
     #  TODO!!! REPLACE PLACEHOLDER VALUES WITH REAL ONES  #
     #######################################################
 
-    # if user has default avatar, then his .avatar is empty
+    # if user has default avatar, then his member.avatar is None
     avatar_url = ""
     if member.avatar:
         avatar_url = member.avatar.url
@@ -40,7 +40,7 @@ class Profilecard(commands.Cog):
         self.bot = bot
 
     @commands.command()
-    async def profilecard(self, ctx: Context, member:DiscordMember = None):
+    async def profilecard(self, ctx: Context, member: DiscordMember = None):
         if ctx.message.mentions:
             for mention in ctx.message.mentions:
                 await ctx.send(file=profileCardFromMember(mention))
