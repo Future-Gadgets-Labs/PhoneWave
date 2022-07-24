@@ -28,13 +28,13 @@ XP_BAR_OFFSET = (100, 195)
 
 # PATHS
 p = Path(__file__).resolve().parent
-MASKS_PATH = p / "masks"
-BACKGROUND_MASK_PATH = MASKS_PATH / "background.png"
+ASSETS_PATH = p.parent.parent.parent / "assets"
+MASKS_PATH = ASSETS_PATH / "masks"
+
+BACKGROUND_MASK_PATH = MASKS_PATH / "profile_card_background.png"
 PROGRESS_BAR_BACKGROUND_PATH = MASKS_PATH / "progressbar_background.png"
 PROGRESS_BAR_FULL_PATH = MASKS_PATH / "progressbar_full.png"
 PROGRESS_BAR_MASK_PATH = MASKS_PATH / "progressbar_mask.png"
-
-ASSETS_PATH = p.parent.parent.parent / "assets"
 
 default_discord_pfp = ASSETS_PATH / "others/default_discord_pfp.png"
 
